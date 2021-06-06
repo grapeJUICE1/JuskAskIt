@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useAlert } from 'react-alert';
 import * as actions from '../../../store/actions/index';
-import { formatDate } from '../../../shared/utils/formatDate';
+import { formatDate } from '../../../utils/formatDate';
 import LikeDislikeButtons from '../../../components/LikeDislikeButtons/LikeDislikeButtons';
 import Loader from '../../../components/UI/Loader/Loader';
 //   {
@@ -107,7 +107,7 @@ const Comments = (props) => {
               ) : (
                 <Loader isSmall isLoaderFor="comment" />
               )}
-              <small>
+              <small id={cmnt._id}>
                 {edit && edit._id === cmnt._id ? (
                   <>
                     <textarea

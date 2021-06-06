@@ -1,4 +1,4 @@
-import updateObj from '../../shared/utils/updateObj';
+import updateObj from './../../utils/updateObj';
 import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
@@ -66,7 +66,7 @@ const submitPostsSuccessHandler = (state, action) => {
       action.submittedPostType === 'answer-edit' ||
       action.submittedPostType === 'comment' ||
       action.submittedPostType === 'comment-edit'
-        ? { ...state.post }
+        ? { ...state.post, fetchAnswers: true }
         : action.post,
     newPostUrl:
       action.submittedPostType === 'post'

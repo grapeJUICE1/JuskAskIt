@@ -1,4 +1,4 @@
-import updateObj from '../../shared/utils/updateObj';
+import updateObj from './../../utils/updateObj';
 import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {

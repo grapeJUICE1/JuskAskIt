@@ -1,11 +1,12 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-use-before-define */
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const Tag = require('./tagModel');
-
-const TagValidation = require('../utils/tagValidation');
 const tagValidation = require('../utils/tagValidation');
 
-//initializing post schema
+// initializing post schema
 const postSchema = mongoose.Schema(
   {
     title: {
@@ -30,16 +31,17 @@ const postSchema = mongoose.Schema(
     contentWordCount: {
       type: Number,
       required: [true, 'Please provide content count for your post'],
-      min: [25, 'your post should have atleast 25 words'],
+      min: [15, 'your post should have atleast 25 words'],
+    },
+    bestAnswer: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Answer',
     },
     likeCount: { type: Number, default: 0 },
     dislikeCount: { type: Number, default: 0 },
     voteCount: { type: Number, default: 0 },
     answerCount: { type: Number, default: 0 },
     views: { type: Number, default: 0 },
-    // userDidLike: { type: Boolean, default: false },
-    // userDidDislike: { type: Boolean, default: false },
-    createdAt: Date,
     postedBy: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
@@ -53,16 +55,16 @@ const postSchema = mongoose.Schema(
         },
       ],
       validate: [
-        (val) => {
-          return val.length <= 5 && val.length > 0;
-        },
+        (val) => val.length <= 5 && val.length > 0,
         "You need to have atleast 1 tag and can't have more than 5 tags",
       ],
     },
+    bestAnswerAcceptedAt: Date,
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
+    timestamps: true,
   }
 );
 
@@ -74,18 +76,20 @@ postSchema.virtual('answers', {
 
 postSchema.pre('save', async function (next) {
   tagValidation(this.tags, next, Post);
-  //populating the slug  as the title of the post
+  // populating the slug  as the title of the post
+  const now = new Date();
   this.slug = slugify(this.title, { lower: true });
-  //populating createdAt as the current date if the created post is new
-  if (this.isNew) this.createdAt = Date.now();
+  if (this.isModified('bestAnswer')) {
+    this.bestAnswerAcceptedAt = now;
+  }
 
   next();
 });
 
 postSchema.pre('findOneAndDelete', async function (next) {
-  let postToBeDeleted = await this.model.findOne(this.getQuery());
+  const postToBeDeleted = await this.model.findOne(this.getQuery());
   for (const tag of postToBeDeleted?.tags) {
-    let tagDocument = await Tag.findOne({ name: tag });
+    const tagDocument = await Tag.findOne({ name: tag });
     tagDocument.postCount -= 1;
     tagDocument.save();
   }
@@ -93,12 +97,12 @@ postSchema.pre('findOneAndDelete', async function (next) {
 });
 
 postSchema.pre(/^find/, async function (next) {
-  //populating postedBy
+  // populating postedBy
   this.populate({ path: 'postedBy', select: '-__v -passwordChangedAt' });
 
   next();
 });
 
-//initializing and exporting Post model
+// initializing and exporting Post model
 const Post = mongoose.model('Post', postSchema);
 module.exports = Post;

@@ -2,37 +2,30 @@ const mongoose = require('mongoose');
 const Post = require('./postModel');
 
 //initializing answer schema
-const answerSchema = mongoose.Schema({
-  post: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'Post',
-    required: [true, 'answer must belong to a post.'],
+const answerSchema = mongoose.Schema(
+  {
+    post: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Post',
+      required: [true, 'answer must belong to a post.'],
+    },
+    content: {
+      type: String,
+      required: [true, 'Please provide the content of your answer'],
+    },
+    contentWordCount: {
+      type: Number,
+      required: [true, 'Please provide content count for your answer'],
+      min: [25, 'your answer should have atleast 15 words'],
+    },
+    likeCount: { type: Number, default: 0 },
+    dislikeCount: { type: Number, default: 0 },
+    voteCount: { type: Number, default: 0 },
+    postedBy: { type: mongoose.Schema.ObjectId, ref: 'User' },
   },
-  content: {
-    type: String,
-    required: [true, 'Please provide the content of your answer'],
-  },
-  contentWordCount: {
-    type: Number,
-    required: [true, 'Please provide content count for your answer'],
-    min: [25, 'your answer should have atleast 25 words'],
-  },
-  likeCount: { type: Number, default: 0 },
-  dislikeCount: { type: Number, default: 0 },
-  voteCount: { type: Number, default: 0 },
-  createdAt: Date,
-  postedBy: { type: mongoose.Schema.ObjectId, ref: 'User' },
-  // userDidLike: { type: Boolean, default: false },
-  // userDidDislike: { type: Boolean, default: false },
-});
+  { timestamps: true }
+);
 
-answerSchema.pre('save', async function (next) {
-  //populating createdAt as the current date if the created answer is new
-  if (this.isNew) {
-    this.createdAt = Date.now();
-  }
-  next();
-});
 answerSchema.post('save', async function () {
   const post = await Post.findById(this.post);
   post.answerCount = await this.model('Answer').countDocuments({
@@ -43,7 +36,7 @@ answerSchema.post('save', async function () {
 
 answerSchema.pre(/^find/, function (next) {
   //populating postedBy
-  this.populate({ path: 'postedBy', select: 'name email photo' });
+  this.populate({ path: 'postedBy' });
   // this.populate({ path: 'post' });
   next();
 });

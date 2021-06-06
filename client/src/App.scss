@@ -1,51 +1,62 @@
-$background-color: #94b4a4;
-$black: hsl(200, 40, 10);
-$white: $background-color;
-$base-font-size: 16px;
-$blockquote-font-size: 1.3rem;
-$base-line-height: 1.5rem;
+@import './variables.scss';
 
-
-*{
+* {
   box-sizing: border-box;
-  word-wrap: break-word;   
+  word-wrap: break-word;
   overflow-wrap: break-word;
   word-break: break-word;
-  margin:0;
-  padding:0;
-  border:0;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
-body{
-background-color: $background-color;
-font-family: 'Open Sans', sans-serif;
-font-weight: 100;
-overflow-x: none;
-min-width: 100%;
+body {
+  background-color: $background-color;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 100;
+  overflow-x: none;
+  min-width: 100%;
 }
-
-html{
+.dropdown-item {
+  white-space: normal !important;
+}
+.dropdown-menu {
+  min-width: 12rem !important;
+  right: 10px !important;
+}
+html {
   font-size: $base-font-size;
 }
-
-@media(max-width:290px){
-  html{
+@media (max-width: 395px) {
+  html {
+    font-size: 14px;
+  }
+  .dropdown {
+    max-width: 18rem;
+    max-height: 29rem;
+  }
+}
+@media (max-width: 290px) {
+  html {
     font-size: 10px;
   }
 }
-@media(max-width:220px){
-  html{
+@media (max-width: 230px) {
+  html {
     font-size: 8px;
   }
+  .dropdown {
+    max-width: 1rem;
+    max-height: 31rem;
+  }
 }
-@media(max-width:170px){
-  html{
+@media (max-width: 170px) {
+  html {
     font-size: 6px;
   }
 }
-.container{
+.container {
   min-width: 100%;
 }
-
 
 .ratio {
   display: grid;
@@ -55,16 +66,15 @@ html{
   }
 }
 
-.profilePostsMarginRight{
+.profilePostsMarginRight {
   margin-right: -240px !important;
   @media screen and (max-width: 992px) {
     margin-right: -15px !important;
   }
 }
 
-
-.paddingLeftImportant{
-  padding-left: 0  !important;
+.paddingLeftImportant {
+  padding-left: 0 !important;
 }
 
 .pagination {
@@ -77,9 +87,9 @@ html{
 .pagination a {
   display: flex;
   flex-wrap: wrap;
-  padding:0.13rem 0.5rem;
-  border: 1px solid #6c7ac9;
-  color: #6c7ac9;
+  padding: 0.13rem 0.5rem;
+  border: 1px solid $color-purple;
+  color: $color-purple;
 }
 
 .pagination__link {
@@ -88,7 +98,7 @@ html{
 
 .pagination__link__active a {
   color: #fff;
-  background: #6c7ac9;
+  background: $color-purple;
 }
 
 .pagination__link__disabled a {
@@ -96,7 +106,7 @@ html{
   border: 1px solid rgb(198, 197, 202);
 }
 
-code{
+code {
   font-size: 87.5%;
   background-color: #a09797;
   color: black;
@@ -105,15 +115,15 @@ code{
   font-family: monospace;
 }
 
-strong{
+strong {
   font-weight: 800;
 }
-img{
+img {
   max-width: 100%;
   height: auto;
 }
 
-blockquote{
+blockquote {
   position: relative;
   padding-left: 1em;
   border-left: 0.2em solid lighten(#000, 40%);
@@ -121,27 +131,61 @@ blockquote{
   font-size: $blockquote-font-size;
   line-height: $base-line-height;
   font-weight: 100;
-  &:before, &:after {
-      content: '\201C';
-      font-family: 'Sanchez';
-      color: lighten(#000, 40%);
-   }
-   &:after {
-      content: '\201D';
-   }
+  &:before,
+  &:after {
+    content: '\201C';
+    font-family: 'Sanchez';
+    color: lighten(#000, 40%);
+  }
+  &:after {
+    content: '\201D';
+  }
 }
 
-
-.tag{
+.tag {
   display: inline-block;
-  background-color: #799cf3;
-  border:2px solid #3a518a;
-  color:#001b17;
-  transition: all .2s;
+  background-color: $color-purple;
+  transition: all 0.2s;
+  font-size: 0.86rem;
+  opacity: 0.8;
 
-  &:hover{
-    background-color: #b9cbf6;
-    border:2px solid #1d47b0;
-    color:#284440;
+  &:hover {
+    background-color: $color-purple-light;
   }
+}
+
+.fade-it {
+  padding: 15px;
+}
+@-webkit-keyframes yellow-fade {
+  from {
+    background: rgb(0, 157, 255);
+    opacity: 0.5;
+  }
+  to {
+    background: $background-color;
+  }
+}
+@keyframes yellow-fade {
+  from {
+    background: rgb(0, 157, 255);
+    opacity: 0.5;
+  }
+  to {
+    background: $background-color;
+    opacity: 1;
+  }
+}
+.fade-it {
+  -webkit-animation: yellow-fade 2s ease-in-out 0s;
+  animation: yellow-fade 2s ease-in-out 0s;
+}
+
+.nav-link {
+  font-size: 0.9rem;
+}
+
+#card-exclude-style {
+  box-shadow: none;
+  background-color: $background-color;
 }

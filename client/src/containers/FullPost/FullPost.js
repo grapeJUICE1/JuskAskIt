@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { Container } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
@@ -9,15 +9,37 @@ import * as actions from '../../store/actions/index';
 import Loader from '../../components/UI/Loader/Loader';
 import checkAuth from '../../hoc/checkAuth';
 
-class FullPost extends Component {
+class FullPost extends PureComponent {
   state = {
     post: {},
     show: false,
+    didUpdate: false,
   };
   componentDidMount() {
     this.props.onFetchFullPost(this.props.match.params.id);
   }
-
+  componentDidUpdate(prevProps) {
+    if (prevProps.match.params.id !== this.props.match.params.id) {
+      this.props.onFetchFullPost(this.props.match.params.id);
+    }
+    if (this.props.answers !== prevProps.answers) {
+      if (this.state.didUpdate === false) {
+        if (this.props.location.hash) {
+          const id = this.props.location.hash.replace('#', '');
+          const element = document.getElementById(id);
+          if (element) {
+            element.scrollIntoView();
+            element.classList.add('fade-it');
+            this.setState({ didUpdate: true });
+          }
+        }
+      }
+    }
+    if (this.props.location.hash !== prevProps.location.hash) {
+      this.props.onFetchFullPost(this.props.match.params.id);
+      this.setState({ didUpdate: false });
+    }
+  }
   render() {
     let post;
     if (this.props.error) {
@@ -54,6 +76,7 @@ class FullPost extends Component {
 const mapStateToProps = (state) => {
   return {
     post: state.fullPost.post,
+    answers: state.answers.answers,
     error: state.fullPost.error,
     loading: state.fullPost.loading,
 

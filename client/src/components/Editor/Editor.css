@@ -1,32 +1,48 @@
 .Editor-header {
-    background-color: #282c34;
-    min-height: 5vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-    margin-bottom: 5vh;
-    text-align: center;
-    margin-top: 5rem;
-  }
+  background-color: #282c34;
+  min-height: 5vh;
+  max-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  margin-bottom: 5vh;
+  text-align: center;
+  margin-top: 5rem;
+}
 
-  .wrapper-class {
-    padding: 1rem;
-    border: 1px solid #ccc;
-  }
-  .editor-class {
-    background-color:lightgray;
-    padding: 40px 1rem;
-    border: 1px solid #ccc;
-  }
-  .toolbar-class {
-    border: 1px solid #ccc;
-  }
+.wrapper-class {
+  padding: 1rem;
+  border: 1px solid #ccc;
+}
+.editor-class {
+  background-color: lightgray;
+  padding: 40px 1rem;
+  border: 1px solid #ccc;
+}
+.toolbar-class {
+  border: none;
+}
+.rdw-editor-toolbar {
+  padding: none;
+}
+.rdw-option-wrapper {
+  border: none;
+}
+.preview {
+  padding: 1rem;
+  margin-top: 1rem;
+}
 
-  .preview {
-    padding: 1rem;
-    margin-top: 1rem;
-  }
-
+.rdw-option-wrapper > img {
+  width: 0.8rem;
+  height: 0.89rem;
+}
+.rdw-dropdown-selectedtext {
+  font-size: 0.8rem;
+}
+.rdw-dropdown-wrapper {
+  width: 6.87rem;
+}

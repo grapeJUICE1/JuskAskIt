@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { timeSince } from '../../shared/utils/formatDate';
+import { timeSince } from './../../utils/formatDate';
 import styles from './Post.module.scss';
 import { Button } from 'react-bootstrap';
 import { withRouter } from 'react-router';
@@ -38,7 +38,7 @@ const Post = (props) => {
           <span>
             <i
               className={classnames('fas fa-comment-alt pr-2', {
-                'text-danger': props.post.answerCount > 0,
+                'text-info': props.post.answerCount > 0,
               })}
             ></i>
           </span>

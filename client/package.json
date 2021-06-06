@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "proxy": "https://intense-peak-92208.herokuapp.com/api/v1/",
+  "proxy": "http://localhost:7000/api/v1/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -24,6 +24,7 @@
     "react-scripts": "4.0.0",
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
+    "socket.io-client": "^4.1.2",
     "web-vitals": "^0.2.4"
   },
   "scripts": {

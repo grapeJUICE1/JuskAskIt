@@ -49,6 +49,8 @@ const MainEditor = (props) => {
   return (
     <>
       <Editor
+        editorStyle={{ maxHeight: '80vh' }}
+        handlePastedText={() => false}
         editorState={props.editorState}
         onEditorStateChange={handleEditorChange}
         wrapperClassName="wrapper-class"

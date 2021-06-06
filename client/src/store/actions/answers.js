@@ -68,13 +68,7 @@ export const LikeDislikeAnswer = (postId, likeordislike = 'like') => {
       dispatch(LikeDislikeAnswerSuccess(res.data.data.doc));
       dispatch(checkUsersLikeDislikeAnswer(postId));
     } catch (err) {
-      console.log(err);
-      if (err.response) {
-        if (!err.response.data.error?.statusCode === 401)
-          dispatch(LikeDislikeAnswerFail(err.response.data));
-      }
-      // else if (err.response.data) dispatch(fetchAnswersFail(err.response.data));
-      else dispatch(LikeDislikeAnswerFail(err));
+      dispatch(LikeDislikeAnswerFail(err.response?.data?.message));
     }
   };
 };

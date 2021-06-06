@@ -14,8 +14,8 @@ exports.getAllPost = handlerFactory.getAll(
   {},
   'Post'
 );
-exports.like = handlerFactory.likeDislike(Post, [], 'like', 'Post');
-exports.dislike = handlerFactory.likeDislike(Post, [], 'dislike', 'Post');
+exports.like = handlerFactory.likeDislike(Post, 'like', 'Post');
+exports.dislike = handlerFactory.likeDislike(Post, 'dislike', 'Post');
 exports.getOnePost = handlerFactory.getOne(Post, ['views']);
 exports.getPostOfUser = handlerFactory.getAll(
   Post,
@@ -29,5 +29,5 @@ exports.updatePost = handlerFactory.updateOne(Post, [
   'content',
   'tags',
   'contentWordCount',
+  'bestAnswer',
 ]);
-exports.addVarToMiddleware = handlerFactory.addVarToMiddleware('checkIfexist');

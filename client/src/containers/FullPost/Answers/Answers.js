@@ -1,13 +1,12 @@
 import React, { useEffect, useState, Fragment } from 'react';
-import { Button, Container } from 'react-bootstrap';
+import { Button, Container, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { Image } from 'cloudinary-react';
 import * as actions from '../../../store/actions/index';
-import { formatDate } from '../../../shared/utils/formatDate';
+import { formatDate } from '../../../utils/formatDate';
 import Loader from '../../../components/UI/Loader/Loader';
-import checkAuth from '../../../hoc/checkAuth';
 import LikeDislikeButtons from '../../../components/LikeDislikeButtons/LikeDislikeButtons';
 import SubmitPostAnswer from '../../../components/SubmitModals/SubmitPostAnswer/SubmitPostAnswer';
 
@@ -15,10 +14,19 @@ import { useAlert } from 'react-alert';
 
 import Comments from '../Comments/Comments';
 import styles from './Answers.module.scss';
+import usePrevious from '../../../utils/usePrevious';
 
 const Answers = (props) => {
+  const { post } = props;
+  const prevPost = usePrevious(post);
+
   useEffect(() => {
-    props.onFetchAnswers(props.postId);
+    if (
+      prevPost &&
+      (prevPost.title !== props.post.title || props.post.fetchAnswers)
+    ) {
+      props.onFetchAnswers(props.postId);
+    }
   }, [props.post]);
 
   const [ansToEdit, setAnsToEdit] = useState(null);
@@ -47,6 +55,50 @@ const Answers = (props) => {
     answers = props.answers.map((ans) => {
       return (
         <Fragment key={ans._id}>
+          {(props.post.postedBy?._id === props.user?._id ||
+            props.post.bestAnswer === ans._id) && (
+            <span style={{ position: 'relative', top: '9.375rem' }}>
+              <OverlayTrigger
+                key={'right'}
+                placement={'right'}
+                overlay={
+                  <Tooltip id={`tooltip-right`}>
+                    {props.post.bestAnswer === ans._id
+                      ? 'You accepted this answer'
+                      : 'Make this answer the best answer if it solved your problem or was the most useful answer of all the answers'}
+                  </Tooltip>
+                }
+              >
+                <button
+                  onClick={() => {
+                    if (props.post.postedBy?._id === props.user?._id) {
+                      props.onSubmitPost(
+                        undefined,
+                        undefined,
+                        undefined,
+                        undefined,
+                        undefined,
+                        'edit',
+                        props.post._id,
+                        undefined,
+                        props.post.bestAnswer === ans._id ? null : ans._id
+                      );
+                    }
+                  }}
+                >
+                  <i
+                    className="fas fa-check"
+                    style={{
+                      fontSize: '1.6rem',
+                      color: `${
+                        props.post.bestAnswer === ans._id ? 'green' : 'grey'
+                      }`,
+                    }}
+                  ></i>
+                </button>
+              </OverlayTrigger>
+            </span>
+          )}
           {!props.likeDislikeAnswerLoading ? (
             <LikeDislikeButtons
               userDidLike={ans.userDidLike}
@@ -57,8 +109,10 @@ const Answers = (props) => {
           ) : (
             <Loader isSmall isLoaderFor="answer" />
           )}
+
           <div
-            className={`ml-5 ${styles.ans_content}`}
+            id={ans._id}
+            className={`ml-5 pl-2 ${styles.ans_content} mb-5`}
             dangerouslySetInnerHTML={{ __html: `${ans.content}` }}
           ></div>
 
@@ -268,7 +322,9 @@ const mapDispatchToProps = (dispatch) => {
       tags,
       contentWordCount,
       type,
-      postId
+      postId,
+      forDoc,
+      bestAnswer
     ) =>
       dispatch(
         actions.submitPost(
@@ -278,7 +334,9 @@ const mapDispatchToProps = (dispatch) => {
           tags,
           contentWordCount,
           type,
-          postId
+          postId,
+          forDoc,
+          bestAnswer
         )
       ),
   };
@@ -286,4 +344,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(checkAuth(withRouter(Answers)));
+)(withRouter(Answers));

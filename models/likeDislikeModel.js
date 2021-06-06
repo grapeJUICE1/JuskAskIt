@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
-const Post = require('./postModel');
-const Answer = require('./answerModel');
-const Comment = require('./commentModel');
-const AppError = require('./../utils/AppError');
 
-//initializing likeDislikeSchema schema
+//  initializing likeDislikeSchema schema
 const likeDislikeSchema = mongoose.Schema({
   type: {
     type: String,
@@ -26,7 +22,7 @@ const likeDislikeSchema = mongoose.Schema({
   doc: { type: mongoose.Schema.ObjectId, refPath: 'for', required: true },
 });
 
-//initializing and exporting LikeDislike model
+// initializing and exporting LikeDislike model
 const LikeDislike = mongoose.model('LikeDislike', likeDislikeSchema);
 
 module.exports = LikeDislike;

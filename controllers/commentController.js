@@ -24,8 +24,8 @@ exports.getCommentOfAnswer = handlerFactory.getAll(
   },
   'Comment'
 );
-exports.like = handlerFactory.likeDislike(Comment, [], 'like', 'Comment');
-exports.dislike = handlerFactory.likeDislike(Comment, [], 'dislike', 'Comment');
+exports.like = handlerFactory.likeDislike(Comment, 'like', 'Comment');
+exports.dislike = handlerFactory.likeDislike(Comment, 'dislike', 'Comment');
 exports.getAllComments = handlerFactory.getAll(
   Comment,
   ['totalNumOfData'],

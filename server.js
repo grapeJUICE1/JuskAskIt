@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const socketIO = require('socket.io');
+const http = require('http');
+const Notification = require('./models/notifications');
 
 //handling uncaught exceptions
 process.on('uncaughtException', (err) => {
@@ -23,7 +26,7 @@ else {
 }
 
 mongoose
-  .connect(process.env.DATABASE_PROD, {
+  .connect(databaseURI, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
@@ -36,12 +39,53 @@ mongoose
 const port = process.env.PORT;
 
 //spinning up the server
-const server = app.listen(port, () => {
+const server = http.createServer(app);
+const io = socketIO(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+});
+
+io.on('connection', (socket) => {
+  socket.on('join', async (userId) => {
+    socket.join(userId);
+  });
+  socket.on('initial_data', async (userId) => {
+    const notification = await Notification.find({ user: userId })
+      .sort({
+        createdAt: -1,
+      })
+      .limit(5);
+    io.to(userId).emit('get_data', notification);
+  });
+  socket.on('check_all_notifications', async (userId) => {
+    const notifications = await Notification.find({
+      user: userId,
+      read: false,
+    });
+
+    notifications.forEach(async (notification) => {
+      notification.read = true;
+      await notification.save();
+    });
+
+    io.to(userId).emit('change_data');
+  });
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
+
+module.exports.ioObject = io;
+
+server.listen(port, () => {
   console.log(
     `${process.env.NODE_ENV} server is up and running at port ${port}`
   );
 });
-
+// console.log('kkk');
 //handling unhandled rejection
 process.on('unhandledRejection', (err) => {
   console.log(err);

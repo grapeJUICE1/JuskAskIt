@@ -77,7 +77,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   } else if (req.cookies.jwt) {
     token = req.cookies.jwt;
   }
-  console.log(token);
 
   // if (!token && req.variable === 'checkIfexist') {
   //   return next();

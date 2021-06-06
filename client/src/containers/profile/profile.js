@@ -6,7 +6,7 @@ import UploadImage from './uploadImageModal/UploadImage';
 import { Image } from 'cloudinary-react';
 
 import Posts from '../Posts/Posts';
-import { formatDate } from '../../shared/utils/formatDate';
+import { formatDate } from '../../utils/formatDate';
 
 import './profile.css';
 import EditModal from './ProfileEditModal/EditModal';
@@ -25,10 +25,6 @@ class profile extends Component {
     this.props.onFetchUserData(this.props.match.params.userID);
   }
   componentDidUpdate(prevProps) {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
     if (prevProps.match.params.userID !== this.props.match.params.userID) {
       this.props.onFetchUserData(this.props.match.params.userID);
     }

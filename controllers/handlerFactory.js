@@ -1,14 +1,19 @@
+/* eslint-disable no-underscore-dangle */
+const { htmlToText } = require('html-to-text');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
 const ApiFeatures = require('../utils/ApiFeatures');
 const filterObj = require('../utils/filterObj');
 const Post = require('../models/postModel');
-const Tag = require('../models/tagModel');
 const LikeDislike = require('../models/likeDislikeModel');
 const tagValidation = require('../utils/tagValidation');
+const Notification = require('../models/notifications');
+const socket = require('../server');
+const Answer = require('../models/answerModel');
+const User = require('../models/userModel');
 
-exports.createOne = (Model, allowedFields = []) => {
-  return catchAsync(async (req, res, next) => {
+exports.createOne = (Model, allowedFields = []) =>
+  catchAsync(async (req, res) => {
     req.body = filterObj(req.body, allowedFields);
 
     if (allowedFields.includes('post')) {
@@ -22,7 +27,44 @@ exports.createOne = (Model, allowedFields = []) => {
     }
 
     const newDoc = await Model.create(req.body);
+    if (
+      Model.collection.collectionName === 'answers' ||
+      Model.collection.collectionName === 'comments'
+    ) {
+      const parentModel =
+        Model.collection.collectionName === 'answers' ? Post : Answer;
+      const parentPost = await parentModel.findById(
+        Model.collection.collectionName === 'answers' ? newDoc.post : newDoc.doc
+      );
+      const title = `${
+        Model.collection.collectionName === 'answers' ? 'answered' : 'commented'
+      } to your ${
+        Model.collection.collectionName === 'answers' ? 'question' : 'answer'
+      }`;
+      const postNameInTitle =
+        Model.collection.collectionName === 'answers'
+          ? parentPost.title
+          : `${htmlToText(parentPost.content, {
+              wordwrap: 130,
+            }).substring(0, 100)}...`;
+      const postRedirectId =
+        Model.collection.collectionName === 'answers'
+          ? parentPost._id
+          : parentPost.post;
+      await Notification.create({
+        title,
+        user: parentPost.postedBy._id,
+        notificationImage: req.user.photo,
+        redirectTo: `/posts/post/${postRedirectId}#${newDoc._id}`,
+        userLink: `/profile/${req.user._id}`,
+        postNameInTitle,
 
+        userNameInTitle: req.user.name,
+      });
+      if (parentPost.postedBy._id) {
+        socket.ioObject.to(`${parentPost.postedBy._id}`).emit('change_data');
+      }
+    }
     return res.status(201).json({
       status: 'success',
       data: {
@@ -30,42 +72,42 @@ exports.createOne = (Model, allowedFields = []) => {
       },
     });
   });
-};
 
-exports.getAll = (Model, allowedFields = [], filter = {}, forModel = null) => {
-  return catchAsync(async (req, res, next) => {
+exports.getAll = (Model, allowedFields = [], filter = {}, forModel = null) =>
+  catchAsync(async (req, res, next) => {
+    const updatedFilter = filter;
     if (allowedFields.includes('usersDoc')) {
-      filter.postedBy = req.params.id;
+      updatedFilter.postedBy = req.params.id;
     }
     if (allowedFields.includes('postsDoc')) {
-      filter.post = req.params.id;
+      updatedFilter.post = req.params.id;
     }
     if (allowedFields.includes('postsComments')) {
-      filter.doc = req.params.id;
+      updatedFilter.doc = req.params.id;
     }
     if (allowedFields.includes('nameSearch')) {
-      filter.name = {
+      updatedFilter.name = {
         $regex: req.query.search,
         $options: 'i',
       };
     }
     if (allowedFields.includes('titleSearch')) {
-      filter.title = {
+      updatedFilter.title = {
         $regex: req.query.search || '',
         $options: 'i',
       };
     }
     if (allowedFields.includes('tagSearch')) {
-      filter.name = {
+      updatedFilter.name = {
         $regex: req.query.search || '',
         $options: 'i',
       };
     }
 
     if (allowedFields.includes('likeDislike')) {
-      filter.for = forModel;
-      filter.doc = req.params.id;
-      filter.user = req.user.id;
+      updatedFilter.for = forModel;
+      updatedFilter.doc = req.params.id;
+      updatedFilter.user = req.user.id;
 
       const doc = await Model.findOne(filter);
       return res.status(200).json({
@@ -75,26 +117,27 @@ exports.getAll = (Model, allowedFields = [], filter = {}, forModel = null) => {
         },
       });
     }
-    //uses the apifeatures.js from util folder to implement
-    //pagination , filtering , sorting and limiting
+    // uses the apifeatures.js from util folder to implement
+    // pagination , filtering , sorting and limiting
 
     const features = new ApiFeatures(Model.find(filter), req.query)
       .filter()
       .sort()
       .limitFields()
       .paginate();
-    let docs = await features.query;
-    //sending error if no post was found
-    if (!docs)
+    const docs = await features.query;
+    // sending error if no post was found
+    if (!docs) {
       return next(
         new AppError(
           'Sorry no posts have been made yet.....start by creating a post',
           404
         )
       );
+    }
 
-    //sending total number of post in the database with the response
-    let totalNumOfData = allowedFields.includes('totalNumOfData')
+    // sending total number of post in the database with the response
+    const totalNumOfData = allowedFields.includes('totalNumOfData')
       ? await new ApiFeatures(Model.countDocuments(filter), req.query).filter(
           true
         ).query
@@ -109,9 +152,8 @@ exports.getAll = (Model, allowedFields = [], filter = {}, forModel = null) => {
       },
     });
   });
-};
-exports.getOne = (Model, allowedFields = []) => {
-  return catchAsync(async (req, res, next) => {
+exports.getOne = (Model, allowedFields = []) =>
+  catchAsync(async (req, res, next) => {
     let doc = await Model.findById(req.params.id);
     if (!doc) return next(new AppError('No doc found with that id', 404));
 
@@ -126,11 +168,11 @@ exports.getOne = (Model, allowedFields = []) => {
       },
     });
   });
-};
 
-exports.likeDislike = (Model, allowedFields = [], type, forDoc) => {
-  return catchAsync(async (req, res, next) => {
-    //checking if user has liked the post ago or not
+exports.likeDislike = (Model, type, forDoc) =>
+  catchAsync(async (req, res) => {
+    console.log(type);
+    // checking if user has liked the post ago or not
     const checkIfLiked = await LikeDislike.findOne({
       type: 'like',
       for: forDoc,
@@ -144,7 +186,7 @@ exports.likeDislike = (Model, allowedFields = [], type, forDoc) => {
       user: req.user.id,
     });
 
-    //if user has liked the post earlier , unlike it
+    // if user has liked the post earlier , unlike it
     if (checkIfLiked) {
       const doc = await Model.findById(checkIfLiked.doc);
       await LikeDislike.deleteMany({
@@ -191,9 +233,9 @@ exports.likeDislike = (Model, allowedFields = [], type, forDoc) => {
         });
       }
     }
-    //if user hasn't liked the post , let user like the post
+    // if user hasn't liked the post , let user like the post
     await LikeDislike.create({
-      type: type,
+      type,
       user: req.user.id,
       for: forDoc,
       doc: req.params.id,
@@ -201,65 +243,113 @@ exports.likeDislike = (Model, allowedFields = [], type, forDoc) => {
 
     const doc = await Model.findById(req.params.id);
     if (type === 'like') {
+      const numToIncReptutationBy =
+        forDoc === 'Post'
+          ? 2
+          : forDoc === 'Answer'
+          ? 3
+          : forDoc === 'Comment'
+          ? 1
+          : 1;
+      console.log(
+        numToIncReptutationBy,
+        doc.postedBy.reputation,
+        doc.postedBy._id
+      );
+      let userReputation = doc.postedBy.reputation || 0;
+      await User.findByIdAndUpdate(doc.postedBy._id, {
+        reputation: (userReputation += numToIncReptutationBy),
+      });
       doc.likeCount = await LikeDislike.countDocuments({
-        type: type,
+        type,
         for: forDoc,
         doc: req.params.id,
       });
     } else if (type === 'dislike') {
+      await User.findByIdAndUpdate(doc.postedBy.id, {
+        reputation: (doc.postedBy.reputation -= 1),
+      });
       doc.dislikeCount = await LikeDislike.countDocuments({
-        type: type,
+        type,
         for: forDoc,
         doc: req.params.id,
       });
     }
     doc.voteCount = doc.likeCount - doc.dislikeCount;
+    if (doc.likeCount === 1) {
+      const { collectionName } = Model.collection;
+      const title = " got it's first upvote";
+
+      // eslint-disable-next-line no-nested-ternary
+      const postRedirectId =
+        collectionName === 'posts'
+          ? doc._id
+          : collectionName === 'answers'
+          ? doc.post
+          : doc.doc;
+      const postNameInTitle =
+        collectionName === 'posts'
+          ? doc.title
+          : `${htmlToText(doc.content, {
+              wordwrap: 130,
+            }).substring(0, 100)}...`;
+      await Notification.create({
+        title,
+        user: doc.postedBy._id,
+        notificationImage:
+          'https://res.cloudinary.com/grapecluster/image/upload/v1621597330/justAskItLogo.png',
+        redirectTo: `/posts/post/${postRedirectId}#${doc._id}`,
+        postNameInTitle,
+      });
+      if (doc.postedBy._id) {
+        socket.ioObject.to(`${doc.postedBy._id}`).emit('change_data');
+      }
+    }
     await doc.save();
     return res.status(200).json({
       status: 'success',
       data: { doc },
     });
   });
-};
 
-exports.deleteOne = (Model, allowedFields = []) => {
-  return catchAsync(async (req, res, next) => {
+exports.deleteOne = (Model) =>
+  catchAsync(async (req, res, next) => {
     const post = await Model.findById(req.params.id);
     if (!post) return next(new AppError('No document found with that id', 404));
-    if (post.postedBy.id !== req.user.id)
+    if (post.postedBy.id !== req.user.id) {
       return next(
         new AppError(
           "You do not have permission to update this document as this document isn't yours",
           401
         )
       );
+    }
     await Model.findByIdAndDelete(req.params.id);
     return res.status(204).json({
       status: 'success',
     });
   });
-};
 
-exports.updateOne = (Model, allowedFields = []) => {
-  return catchAsync(async (req, res, next) => {
+exports.updateOne = (Model, allowedFields = []) =>
+  catchAsync(async (req, res, next) => {
     const filteredReq = filterObj(req.body, allowedFields);
 
     const doc = await Model.findById(req.params.id);
     if (!doc) return next(new AppError('No document found with that id', 404));
-    if (doc.postedBy.id !== req.user.id)
+    if (doc.postedBy.id !== req.user.id) {
       return next(
         new AppError(
           "You do not have permission to update this document as this document isn't yours",
           401
         )
       );
+    }
     const updatedDoc = await Model.findByIdAndUpdate(
       req.params.id,
       filteredReq,
       { new: true, runValidators: true }
     );
     if (updatedDoc.tags) {
-      // TODO:
       tagValidation(updatedDoc.tags, next, Post);
     }
     return res.status(200).json({
@@ -267,10 +357,3 @@ exports.updateOne = (Model, allowedFields = []) => {
       data: { doc: updatedDoc },
     });
   });
-};
-exports.addVarToMiddleware = (variable) => {
-  return catchAsync(async (req, res, next) => {
-    req.variable = variable;
-    next();
-  });
-};

@@ -1,4 +1,4 @@
-import updateObj from '../../shared/utils/updateObj';
+import updateObj from './../../utils/updateObj';
 import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
@@ -47,7 +47,9 @@ const likeAnswerSuccessHandler = (state, action) => {
   });
 };
 const likeAnswerFailHandler = (state, action) => {
-  return updateObj(state, { error: action.error, loading: false });
+  return updateObj(state, {
+    likeDislikeAnswerLoading: false,
+  });
 };
 const checkUsersLikeDislikeAnswer = (state, action) => {
   let answersCopy = [...state.answers];

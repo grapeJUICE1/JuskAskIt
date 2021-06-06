@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './custom-bootstrap.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
@@ -19,7 +19,7 @@ import usersReducer from './store/reducers/users';
 import tagsReducer from './store/reducers/tags';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://intense-peak-92208.herokuapp.com/api/v1/';
+axios.defaults.baseURL = 'http://localhost:7000/api/v1/';
 axios.defaults.withCredentials = true;
 
 const rootReducer = combineReducers({

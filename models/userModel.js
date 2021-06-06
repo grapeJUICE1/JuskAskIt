@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
-//initializing user schema
+// initializing user schema
 
 const URLvalidator = {
   validator: (value) => {
@@ -55,6 +55,10 @@ const userSchema = mongoose.Schema({
     default: 'No bio',
     maxLength: [300, "bio can't be greater than 300 words"],
   },
+  reputation: {
+    type: Number,
+    default: 0,
+  },
   workStatus: {
     type: String,
     maxLength: [50, "work can't be greater than 50 words"],
@@ -62,7 +66,6 @@ const userSchema = mongoose.Schema({
   },
   company: {
     type: String,
-    default: 'None',
     default: 'No company given',
   },
   role: {
@@ -113,44 +116,45 @@ const userSchema = mongoose.Schema({
 });
 
 userSchema.pre('save', async function (next) {
-  //populating joinedAt as the current date if the created user is new
+  // populating joinedAt as the current date if the created user is new
   if (this.isNew) this.joinedAt = Date.now();
 
-  //checking if the password was modified or updated
-  //if password was not modified , break out of this function and save the user
-  //else continue
+  // checking if the password was modified or updated
+  // if password was not modified , break out of this function and save the user
+  // else continue
 
   if (!this.isModified('password')) return next();
 
-  //hashing users Password
+  // hashing users Password
   this.password = await bcrypt.hash(this.password, 12);
 
-  //making passwordConfirm undefined so that it doesn't get revealed
+  // making passwordConfirm undefined so that it doesn't get revealed
   this.passwordConfirm = undefined;
 
   this.photo = `https://ui-avatars.com/api/?name=${this.name}`;
-  next();
+  return next();
 });
 
-//this instance method checks if two passwords match
+// this instance method checks if two passwords match
 userSchema.methods.comparePassword = async function (candidatePass, userPass) {
-  return await bcrypt.compare(candidatePass, userPass);
+  const result = await bcrypt.compare(candidatePass, userPass);
+  return result;
 };
 
-//this instance methods checks if password was changed recently compared to the jwt timestamp
+// this instance methods checks if password was changed recently compared to the jwt timestamp
 userSchema.methods.checkIfPasswordChanged = function (JWTstamp) {
   if (this.passwordChangedAt) {
     const changedTimeStamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
       10
     );
-    //return true if password was channged after issueing jwt | else return false
-    return JWTTimeStamp < changedTimeStamp;
+    // return true if password was channged after issueing jwt | else return false
+    return JWTstamp < changedTimeStamp;
   }
   return false;
 };
 
-//initializing and exporting User model
+// initializing and exporting User model
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

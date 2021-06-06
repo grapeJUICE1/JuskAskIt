@@ -16,7 +16,7 @@ const LikeDislike = require('../models/likeDislikeModel');
 dotenv.config({ path: '../config.env' });
 
 mongoose
-  .connect(process.env.DATABASE_PROD, {
+  .connect(process.env.DATABASE_LOCAL, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
@@ -133,7 +133,7 @@ const importData = async () => {
       for (let j = 0; j < s[Math.floor(Math.random() * s.length)]; j++) {
         i.push(lol[Math.floor(Math.random() * lol.length)]);
       }
-      console.log(i);
+
       return [...new Set(i)];
     }
     for (let i = 0; i < 40; i++) {

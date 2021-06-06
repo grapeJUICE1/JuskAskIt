@@ -43,7 +43,7 @@ const SortButtons = (props) => {
                     : radioValue === key
                 }
                 onChange={(e) => setRadioValue(Number(e.currentTarget.value))}
-                variant="outline-secondary"
+                variant="outline-dark"
                 className={'rounded-0 px-1 ' + styles.sort_buttons}
                 size="sm"
                 onClick={srtOpt.func}

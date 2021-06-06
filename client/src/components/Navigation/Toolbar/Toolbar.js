@@ -5,17 +5,13 @@ import Sidebar from '../Sidebar/Sidebar';
 
 const Toolbar = () => {
   return (
-    <Navbar
-      style={{ backgroundColor: 'rgb(202, 149, 122)' }}
-      variant="light"
-      fixed="top"
-    >
+    <Navbar variant="dark" bg="dark" fixed="top" style={{ padding: '0 16px' }}>
       <Sidebar />
       <Navbar.Brand className="ml-3" href="/posts">
         <img
           alt="logo"
           src="https://res.cloudinary.com/grapecluster/image/upload/v1621597330/justAskItLogo.png"
-          style={{ width: '6.25rem' }}
+          style={{ width: '5.25rem' }}
         />
       </Navbar.Brand>
       <NavigationItems />

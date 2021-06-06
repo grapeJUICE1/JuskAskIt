@@ -1,14 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from '../axios-main';
 import { useAlert } from 'react-alert';
 import { connect } from 'react-redux';
 
 import * as actions from '../store/actions/index';
+import { setLocale } from 'faker';
 
 const checkAuth = (Wrapped) => {
   function CheckAuth(props) {
     const alert = useAlert();
+    const [polling, setPolling] = useState('lol');
     useEffect(() => {
+      let i = 0;
       const resInt = axios.interceptors.response.use(
         (response) => {
           // Do something with response data
@@ -17,19 +20,15 @@ const checkAuth = (Wrapped) => {
         async (error) => {
           switch (error.response.status) {
             case 401:
+              i++;
+              console.log(i + 1);
               alert.error(error.response.data.message);
               if (props.user) {
                 await props.onLogout();
               }
               break;
-            case 429:
-              alert.error(error.response.data.message);
-              break;
             case 500:
               alert.error('OOps .... Error occured ... try again later');
-              break;
-            case 404:
-              alert.error(error.response.data.message);
               break;
             default:
               if (error.response.data.message)
@@ -43,7 +42,7 @@ const checkAuth = (Wrapped) => {
       return function cleanup() {
         axios.interceptors.response.eject(resInt);
       };
-    });
+    }, [Wrapped]);
 
     return <Wrapped {...props} />;
   }

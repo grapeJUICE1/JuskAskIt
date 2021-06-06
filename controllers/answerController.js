@@ -8,8 +8,8 @@ exports.createAnswer = handlerFactory.createOne(Answer, [
   'postedBy',
   'contentWordCount',
 ]);
-exports.like = handlerFactory.likeDislike(Answer, [], 'like', 'Answer');
-exports.dislike = handlerFactory.likeDislike(Answer, [], 'dislike', 'Answer');
+exports.like = handlerFactory.likeDislike(Answer, 'like', 'Answer');
+exports.dislike = handlerFactory.likeDislike(Answer, 'dislike', 'Answer');
 exports.getAllAnswer = handlerFactory.getAll(
   Answer,
   ['totalNumOfData'],
@@ -36,7 +36,6 @@ exports.updateAnswer = handlerFactory.updateOne(Answer, [
   'content',
   'contentWordCount',
 ]);
-exports.addVarToMiddleware = handlerFactory.addVarToMiddleware('checkIfexist');
 
 exports.deleteAnswersOfPost = catchAsync(async (req, res, next) => {
   await Answer.deleteMany({ post: req.params.id });

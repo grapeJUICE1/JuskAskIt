@@ -135,7 +135,8 @@ export const submitPost = (
   contentWordCount,
   type = undefined,
   postId = undefined,
-  forDoc = undefined
+  forDoc = undefined,
+  bestAnswer = undefined
 ) => {
   return async (dispatch) => {
     dispatch(submitPostStart());
@@ -147,8 +148,8 @@ export const submitPost = (
         tags,
         contentWordCount,
         for: forDoc,
+        bestAnswer,
       };
-
       let res;
       if (type === 'edit') {
         res = await axios.patch(`/posts/${postId}`, data);

@@ -36,7 +36,6 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
     upsert: false,
     runValidators: true,
   });
-  console.log(updatedUser);
 
   return res.status(200).json({
     status: 'success',

@@ -50,6 +50,7 @@ function SubmitPostAnswer(props) {
     props.onResetEditSuccess();
     props.handleClose();
   }
+
   if (props.newPostUrl) {
     alert.success('Post Submitted Succesfully');
     props.onResetEditSuccess();

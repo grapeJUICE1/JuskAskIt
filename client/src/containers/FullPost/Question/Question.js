@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import React from 'react';
 import { Container, Button } from 'react-bootstrap';
 import { Image } from 'cloudinary-react';
-import { formatDate, timeSince } from '../../../shared/utils/formatDate';
+import { formatDate, timeSince } from '../../../utils/formatDate';
 import styles from './Question.module.scss';
 import LikeDislikeButtons from '../../../components/LikeDislikeButtons/LikeDislikeButtons';
 import Loader from '../../../components/UI/Loader/Loader';

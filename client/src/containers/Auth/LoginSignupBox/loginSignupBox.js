@@ -2,12 +2,61 @@ import React from 'react';
 import styles from './loginSignupBox.module.scss';
 import { Container } from 'react-bootstrap';
 import classnames from 'classnames';
-import checkCookie from '../../utils/checkCookieDisabled';
+import checkCookie from '../../../utils/checkCookieDisabled';
+import updateObj from './../../../utils/updateObj';
+import { checkValidity } from '../../../utils/validation';
 
 function loginSignupBox({ data, inputs, title }) {
   const inputChangeHandler = (evt, field) => {
     evt.preventDefault();
-    data.setState({ [field]: evt.target.value });
+    const stateControl = data.state.controls;
+
+    const passConfirmCheckWhenFieldIsPassword =
+      field === 'password' && title === 'Signup'
+        ? {
+            passwordConfirm: updateObj(stateControl.passwordConfirm, {
+              valid: checkValidity(
+                evt.target.value,
+                stateControl.passwordConfirm.validation,
+                stateControl.password.value
+              ),
+              touched: true,
+            }),
+          }
+        : {};
+
+    const updatedControls = updateObj(stateControl, {
+      [field]: updateObj(stateControl[field], {
+        value: evt.target.value,
+        valid:
+          title === 'Login' && stateControl[field].valueType !== 'email'
+            ? true
+            : checkValidity(
+                evt.target.value,
+                stateControl[field].validation,
+                title === 'Signup' &&
+                  stateControl[field].validation.passwordConfirm === true
+                  ? stateControl.password.value
+                  : undefined
+              ),
+        touched: true,
+      }),
+
+      ...passConfirmCheckWhenFieldIsPassword,
+    });
+    const fields = [];
+    for (let field in updatedControls) {
+      fields.push(updatedControls[field].valid);
+    }
+
+    if (!fields.includes(false)) {
+      data.setState({ formIsValid: true });
+    } else {
+      data.setState({ formIsValid: false });
+    }
+    data.setState({
+      controls: updatedControls,
+    });
   };
   const focus = (evt) => {
     evt.preventDefault();
@@ -41,10 +90,6 @@ function loginSignupBox({ data, inputs, title }) {
       }, 1000);
     } else {
       data.setState({
-        submitButtonStyle: {
-          background: 'red',
-          borderColor: 'red',
-        },
         feedbackStyle: {
           transition: 'all .4s',
           display: 'block',
@@ -56,23 +101,43 @@ function loginSignupBox({ data, inputs, title }) {
       });
     }
   };
+
   let cookieEnabled = checkCookie();
   return (
     <Container className="d-flex flex-column justify-content-between ml-lg-4 pt-5 mt-5">
+      <iframe
+        src="https://mindmup.github.io/3rdpartycookiecheck/start.html"
+        style={{ display: 'none' }}
+        title="cookie_check"
+      />
       <form className={styles.login} onSubmit={submitHandler}>
         <fieldset>
           <legend className={styles.legend}>{title}</legend>
           {inputs.map((inp, ind) => (
             <div key={ind} className={styles.input}>
               <input
-                style={data.state.inputStyle}
+                style={{
+                  ...data.state.inputStyle,
+                  borderColor:
+                    (inp.touched && !inp.valid) || data.props.error
+                      ? 'red'
+                      : '#ededed',
+                }}
                 onFocus={focus}
                 onBlur={blur}
-                onChange={(evt) => inputChangeHandler(evt, inp[1])}
-                type={inp[0]}
-                placeholder={inp[1]}
+                value={inp.value}
+                onChange={(evt) => inputChangeHandler(evt, inp.valueType)}
+                type={inp.elementConfig.type}
+                placeholder={inp.elementConfig.placeholder}
                 required
               />
+              {inp.touched && !inp.valid ? (
+                <small className="text-danger">
+                  {inp.validation.validationMsg}
+                </small>
+              ) : (
+                ''
+              )}
               <span style={data.state.spanStyle}>
                 <i className="far fa-envelope"></i>
               </span>
@@ -88,6 +153,7 @@ function loginSignupBox({ data, inputs, title }) {
           )}
           <button
             type="submit"
+            disabled={!data.state.formIsValid}
             style={data.state.submitButtonStyle}
             className={styles.submit}
           >
