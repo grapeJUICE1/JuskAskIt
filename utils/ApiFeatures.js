@@ -1,3 +1,4 @@
+/* eslint-disable node/no-unsupported-features/es-syntax */
 class APIFeatures {
   constructor(query, queryString) {
     this.query = query;
@@ -22,7 +23,11 @@ class APIFeatures {
 
   sort() {
     if (this.queryString.sort) {
-      const sortBy = this.queryString.sort.split(',').join(' ');
+      let sortBy = this.queryString.sort.split(',').join(' ');
+      if (sortBy === '-voteCount') {
+        sortBy = '-sortBest -voteCount';
+      }
+      console.log(sortBy);
       this.query = this.query.sort(sortBy);
     } else {
       this.query = this.query.sort('-createdAt');

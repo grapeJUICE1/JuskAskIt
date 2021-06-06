@@ -349,6 +349,13 @@ exports.updateOne = (Model, allowedFields = []) =>
       filteredReq,
       { new: true, runValidators: true }
     );
+    if (filteredReq.bestAnswer) {
+      // eslint-disable-next-line prefer-const
+      let ansToUpdate = await Answer.findById(filteredReq.bestAnswer);
+      ansToUpdate.sortBest = 10;
+      console.log(ansToUpdate);
+      await ansToUpdate.save();
+    }
     if (updatedDoc.tags) {
       tagValidation(updatedDoc.tags, next, Post);
     }

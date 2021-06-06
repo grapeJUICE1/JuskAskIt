@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Post = require('./postModel');
 
-//initializing answer schema
+// initializing answer schema
 const answerSchema = mongoose.Schema(
   {
     post: {
@@ -22,6 +22,7 @@ const answerSchema = mongoose.Schema(
     dislikeCount: { type: Number, default: 0 },
     voteCount: { type: Number, default: 0 },
     postedBy: { type: mongoose.Schema.ObjectId, ref: 'User' },
+    sortBest: Number,
   },
   { timestamps: true }
 );
@@ -35,7 +36,7 @@ answerSchema.post('save', async function () {
 });
 
 answerSchema.pre(/^find/, function (next) {
-  //populating postedBy
+  // populating postedBy
   this.populate({ path: 'postedBy' });
   // this.populate({ path: 'post' });
   next();
@@ -50,7 +51,7 @@ answerSchema.pre(
   }
 );
 
-//initializing and exporting Answer model
+// initializing and exporting Answer model
 const Answer = mongoose.model('Answer', answerSchema);
 
 module.exports = Answer;
