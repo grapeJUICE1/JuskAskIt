@@ -12,15 +12,20 @@ const SortButtons = (props) => {
     { label: 'Views', func: props.sortByViews },
     { label: 'Unanswered', func: props.filterUnanswered },
     { label: 'Popularity', func: props.sortByPopularity },
+    { label: 'Best', func: props.sortBest },
   ];
   const [radioValue, setRadioValue] = useState(1);
   return (
     <Col
-      lg={7}
+      xl={props.isAnswers ? 12 : 7}
+      lg={props.isAnswers ? 12 : 7}
       className={classNames({
-        'mt-lg-4 d-flex justify-content-lg-end': true,
-        'pt-lg-5 ': !props.isUser,
-        [`${styles.col_sort_buttons}`]: !props.isProfile,
+        'mt-lg-4 d-flex': true,
+        'justify-content-lg-end': !props.isAnswers,
+        'justify-content-end pb-4': props.isAnswers,
+        [`${styles.col_sort_buttons_for_answers}`]: props.isAnswers,
+        'pt-lg-5 ': !props.isUser && !props.isAnswers,
+        [`${styles.col_sort_buttons}`]: !props.isProfile && !props.isAnswers,
         [`${styles.col_sort_buttons_for_profile}`]: props.isProfile,
         [`${styles.col_sort_buttons_for_users_page}`]: props.isUser,
       })}

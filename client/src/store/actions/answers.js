@@ -15,23 +15,33 @@ export const fetchAnswersFail = (error) => {
     error,
   };
 };
-export const fetchAnswersSuccess = (answers, total) => {
+export const fetchAnswersSuccess = (answers, totalInPage, totalAnswers) => {
   return {
     type: actionTypes.FETCH_ANSWERS_SUCCESS,
     answers,
-    total,
+    totalInPage,
+    totalAnswers,
   };
 };
-export const fetchAnswers = (postId) => {
+export const fetchAnswers = (postId, sortBy, currentPage, perPagePosts) => {
   return async (dispatch) => {
     dispatch(fetchAnswersStart());
     try {
       const res = await axios.get(`/answers/${postId}/get-answers`, {
         params: {
-          sort: '-voteCount',
+          sort: sortBy,
+          limit: perPagePosts,
+          page: currentPage,
         },
       });
-      dispatch(fetchAnswersSuccess(res.data.data.docs, res.data.results));
+      console.log(res.data.totalNumOfData);
+      dispatch(
+        fetchAnswersSuccess(
+          res.data.data.docs,
+          res.data.results,
+          res.data.totalNumOfData
+        )
+      );
       for (let ans of res.data.data.docs) {
         dispatch(checkUsersLikeDislikeAnswer(ans._id));
       }

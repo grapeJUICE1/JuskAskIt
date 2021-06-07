@@ -23,15 +23,12 @@ class FullPost extends PureComponent {
       this.props.onFetchFullPost(this.props.match.params.id);
     }
     if (this.props.answers !== prevProps.answers) {
-      if (this.state.didUpdate === false) {
-        if (this.props.location.hash) {
-          const id = this.props.location.hash.replace('#', '');
-          const element = document.getElementById(id);
-          if (element) {
-            element.scrollIntoView();
-            element.classList.add('fade-it');
-            this.setState({ didUpdate: true });
-          }
+      if (this.props.location.hash) {
+        const id = this.props.location.hash.replace('#', '');
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView();
+          element.classList.add('fade-it');
         }
       }
     }

@@ -80,14 +80,16 @@ html {
 .pagination {
   padding-top: 3.125rem;
   display: flex;
-  justify-content: center;
+  justify-content: start;
   list-style: none;
   cursor: pointer;
 }
 .pagination a {
   display: flex;
   flex-wrap: wrap;
-  padding: 0.13rem 0.5rem;
+  padding: 0.04rem 0.4rem;
+  margin: 0 0.1rem;
+  font-size: 1rem;
   border: 1px solid $color-purple;
   color: $color-purple;
 }

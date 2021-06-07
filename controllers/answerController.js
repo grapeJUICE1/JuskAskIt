@@ -19,7 +19,7 @@ exports.getAllAnswer = handlerFactory.getAll(
 exports.getOneAnswer = handlerFactory.getOne(Answer);
 exports.getAnswerOfPost = handlerFactory.getAll(
   Answer,
-  ['postsDoc', 'checkIfUserLikeDisliked'],
+  ['postsDoc', 'checkIfUserLikeDisliked', 'totalNumOfData'],
   {},
   'Answer'
 );

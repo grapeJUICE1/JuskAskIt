@@ -142,8 +142,8 @@ class TagsPage extends Component {
           <Loader />
         )}
         <ReactPaginate
-          previousLabel={'<<'}
-          nextLabel={'>>'}
+          previousLabel={'prev'}
+          nextLabel={'next'}
           pageCount={pageCount}
           initialPage={this.state.currentPage ? this.state.currentPage - 1 : 0}
           onPageChange={this.handlePageClick}

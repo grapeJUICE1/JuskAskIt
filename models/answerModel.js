@@ -22,7 +22,7 @@ const answerSchema = mongoose.Schema(
     dislikeCount: { type: Number, default: 0 },
     voteCount: { type: Number, default: 0 },
     postedBy: { type: mongoose.Schema.ObjectId, ref: 'User' },
-    sortBest: Number,
+    sortBest: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

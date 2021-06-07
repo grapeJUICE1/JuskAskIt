@@ -7,7 +7,7 @@ const initialState = {
   loading: false,
   likeDislikeAnswerLoading: false,
   likeDislikeCommentLoading: false,
-  total: 0,
+  totalAnswers: 0,
 };
 
 const fetchAnswersStartHandler = (state, action) => {
@@ -18,7 +18,7 @@ const fetchAnswersSuccessHandler = (state, action) => {
     error: null,
     answers: action.answers,
     loading: false,
-    total: action.total,
+    totalAnswers: action.totalAnswers,
   });
 };
 const fetchAnswersFailHandler = (state, action) => {
@@ -129,7 +129,9 @@ const fetchCommentsSuccess = (state, action) => {
   let updatedAnswerIndex = answersCopy.findIndex(
     (obj) => obj._id === action.id
   );
-
+  if (answersCopy[updatedAnswerIndex] === undefined) {
+    return state;
+  }
   answersCopy[updatedAnswerIndex].comments = action.comments;
 
   return updateObj(state, {

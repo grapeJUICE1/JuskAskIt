@@ -142,7 +142,6 @@ exports.getAll = (Model, allowedFields = [], filter = {}, forModel = null) =>
           true
         ).query
       : null;
-
     return res.status(200).json({
       status: 'success',
       totalNumOfData: totalNumOfData || null,
@@ -344,6 +343,9 @@ exports.updateOne = (Model, allowedFields = []) =>
         )
       );
     }
+    const oldDoc = filteredReq.bestAnswer
+      ? await Model.findById(req.params.id)
+      : '';
     const updatedDoc = await Model.findByIdAndUpdate(
       req.params.id,
       filteredReq,
@@ -351,9 +353,13 @@ exports.updateOne = (Model, allowedFields = []) =>
     );
     if (filteredReq.bestAnswer) {
       // eslint-disable-next-line prefer-const
-      let ansToUpdate = await Answer.findById(filteredReq.bestAnswer);
+      const oldBestAnswer = await Answer.findById(oldDoc.bestAnswer);
+      const ansToUpdate = await Answer.findById(filteredReq.bestAnswer);
       ansToUpdate.sortBest = 10;
-      console.log(ansToUpdate);
+      if (oldBestAnswer) {
+        oldBestAnswer.sortBest = 0;
+        await oldBestAnswer.save();
+      }
       await ansToUpdate.save();
     }
     if (updatedDoc.tags) {

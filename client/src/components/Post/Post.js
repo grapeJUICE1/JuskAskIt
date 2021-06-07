@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { timeSince } from './../../utils/formatDate';
+import { timeSince } from '../../utils/formatDate';
 import styles from './Post.module.scss';
 import { Button } from 'react-bootstrap';
 import { withRouter } from 'react-router';

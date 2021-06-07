@@ -23,11 +23,7 @@ class APIFeatures {
 
   sort() {
     if (this.queryString.sort) {
-      let sortBy = this.queryString.sort.split(',').join(' ');
-      if (sortBy === '-voteCount') {
-        sortBy = '-sortBest -voteCount';
-      }
-      console.log(sortBy);
+      const sortBy = this.queryString.sort.split(',').join(' ');
       this.query = this.query.sort(sortBy);
     } else {
       this.query = this.query.sort('-createdAt');
