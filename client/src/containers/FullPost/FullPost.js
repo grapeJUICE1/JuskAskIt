@@ -24,11 +24,14 @@ class FullPost extends PureComponent {
     }
     if (this.props.answers !== prevProps.answers) {
       if (this.props.location.hash) {
-        const id = this.props.location.hash.replace('#', '');
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView();
-          element.classList.add('fade-it');
+        if (!this.state.didUpdate) {
+          const id = this.props.location.hash.replace('#', '');
+          const element = document.getElementById(id);
+          if (element) {
+            element.scrollIntoView();
+            element.classList.add('fade-it');
+            this.setState({ didUpdate: true });
+          }
         }
       }
     }

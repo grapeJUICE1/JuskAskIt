@@ -1,10 +1,11 @@
+/* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const socketIO = require('socket.io');
 const http = require('http');
 const Notification = require('./models/notifications');
 
-//handling uncaught exceptions
+// handling uncaught exceptions
 process.on('uncaughtException', (err) => {
   console.log(err);
   process.exit(1);
@@ -14,9 +15,8 @@ dotenv.config({ path: './config.env' });
 
 const app = require('./app');
 
-//initializing mongoose and mongodb
+// initializing mongoose and mongodb
 let databaseURI = '';
-console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development')
   databaseURI = process.env.DATABASE_LOCAL;
 else if (process.env.NODE_ENV === 'production')
@@ -38,7 +38,7 @@ mongoose
 
 const port = process.env.PORT;
 
-//spinning up the server
+// spinning up the server
 const server = http.createServer(app);
 const io = socketIO(server, {
   cors: {
@@ -82,11 +82,15 @@ module.exports.ioObject = io;
 
 server.listen(port, () => {
   console.log(
-    `${process.env.NODE_ENV} server is up and running at port ${port}`
+    `
+    ################################################
+    🛡️  Server listening on port: ${port} 🛡️
+    ################################################
+  `
   );
 });
 // console.log('kkk');
-//handling unhandled rejection
+// handling unhandled rejection
 process.on('unhandledRejection', (err) => {
   console.log(err);
   server.close(() => {

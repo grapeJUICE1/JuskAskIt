@@ -1,3 +1,4 @@
+/* eslint-disable node/no-unsupported-features/es-syntax */
 /* eslint-disable no-underscore-dangle */
 const { htmlToText } = require('html-to-text');
 const catchAsync = require('../utils/catchAsync');
@@ -14,6 +15,7 @@ const User = require('../models/userModel');
 
 exports.createOne = (Model, allowedFields = []) =>
   catchAsync(async (req, res) => {
+    console.log(req.body);
     req.body = filterObj(req.body, allowedFields);
 
     if (allowedFields.includes('post')) {
@@ -75,7 +77,7 @@ exports.createOne = (Model, allowedFields = []) =>
 
 exports.getAll = (Model, allowedFields = [], filter = {}, forModel = null) =>
   catchAsync(async (req, res, next) => {
-    const updatedFilter = filter;
+    const updatedFilter = { ...filter };
     if (allowedFields.includes('usersDoc')) {
       updatedFilter.postedBy = req.params.id;
     }
@@ -109,7 +111,7 @@ exports.getAll = (Model, allowedFields = [], filter = {}, forModel = null) =>
       updatedFilter.doc = req.params.id;
       updatedFilter.user = req.user.id;
 
-      const doc = await Model.findOne(filter);
+      const doc = await Model.findOne(updatedFilter);
       return res.status(200).json({
         status: 'success',
         data: {
@@ -119,14 +121,15 @@ exports.getAll = (Model, allowedFields = [], filter = {}, forModel = null) =>
     }
     // uses the apifeatures.js from util folder to implement
     // pagination , filtering , sorting and limiting
-
-    const features = new ApiFeatures(Model.find(filter), req.query)
+    console.log('before', updatedFilter);
+    const features = new ApiFeatures(Model.find(updatedFilter), req.query)
       .filter()
       .sort()
       .limitFields()
       .paginate();
     const docs = await features.query;
     // sending error if no post was found
+    console.log('After', updatedFilter);
     if (!docs) {
       return next(
         new AppError(
@@ -137,13 +140,14 @@ exports.getAll = (Model, allowedFields = [], filter = {}, forModel = null) =>
     }
 
     // sending total number of post in the database with the response
-    const totalNumOfData = allowedFields.includes('totalNumOfData')
-      ? await new ApiFeatures(Model.countDocuments(filter), req.query).filter(
-          true
-        ).query
-      : null;
+    const totalNumOfData =
+      // allowedFields.includes('totalNumOfData')
+      // ?
+      await Model.countDocuments(updatedFilter);
+    // : null;
     return res.status(200).json({
       status: 'success',
+      updatedFilter,
       totalNumOfData: totalNumOfData || null,
       results: docs.length,
       data: {
@@ -285,7 +289,7 @@ exports.likeDislike = (Model, type, forDoc) =>
           ? doc._id
           : collectionName === 'answers'
           ? doc.post
-          : doc.doc;
+          : doc.postId;
       const postNameInTitle =
         collectionName === 'posts'
           ? doc.title

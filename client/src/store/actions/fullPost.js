@@ -136,11 +136,13 @@ export const submitPost = (
   type = undefined,
   postId = undefined,
   forDoc = undefined,
-  bestAnswer = undefined
+  bestAnswer = undefined,
+  postIdForComment = undefined
 ) => {
   return async (dispatch) => {
     dispatch(submitPostStart());
     try {
+      console.log(postIdForComment);
       let data = {
         title,
         content,
@@ -149,6 +151,7 @@ export const submitPost = (
         contentWordCount,
         for: forDoc,
         bestAnswer,
+        postId: postIdForComment,
       };
       let res;
       if (type === 'edit') {

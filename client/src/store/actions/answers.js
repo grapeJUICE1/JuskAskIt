@@ -34,7 +34,6 @@ export const fetchAnswers = (postId, sortBy, currentPage, perPagePosts) => {
           page: currentPage,
         },
       });
-      console.log(res.data.totalNumOfData);
       dispatch(
         fetchAnswersSuccess(
           res.data.data.docs,
@@ -42,9 +41,9 @@ export const fetchAnswers = (postId, sortBy, currentPage, perPagePosts) => {
           res.data.totalNumOfData
         )
       );
-      for (let ans of res.data.data.docs) {
-        dispatch(checkUsersLikeDislikeAnswer(ans._id));
-      }
+      // for (let ans of res.data.data.docs) {
+      //   dispatch(checkUsersLikeDislikeAnswer(ans._id));
+      // }
     } catch (err) {
       if (err.response) dispatch(fetchAnswersFail(err.response.data));
       else dispatch(fetchAnswersFail(err));

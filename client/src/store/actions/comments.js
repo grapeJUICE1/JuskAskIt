@@ -15,14 +15,22 @@ export const fetchCommentsFail = (error, forDoc) => {
     error,
   };
 };
-export const fetchCommentsSuccess = (comments, forDoc, id) => {
+export const fetchCommentsSuccess = (
+  comments,
+  forDoc,
+  id,
+  totalNumOfComments,
+  currentPage
+) => {
   return {
     type: actionTypes[`FETCH_${forDoc.toUpperCase()}_COMMENTS_SUCCESS`],
     comments,
     id,
+    totalNumOfComments,
+    currentPage,
   };
 };
-export const fetchComments = (docId, forDoc) => {
+export const fetchComments = (docId, forDoc, currentPage, perPagePosts) => {
   return async (dispatch) => {
     dispatch(fetchCommentsStart(forDoc));
     try {
@@ -31,13 +39,23 @@ export const fetchComments = (docId, forDoc) => {
         {
           params: {
             sort: '-voteCount',
+            limit: perPagePosts,
+            page: currentPage,
           },
         }
       );
-      dispatch(fetchCommentsSuccess(res.data.data.docs, forDoc, docId));
-      for (let cmnt of res.data.data.docs) {
-        dispatch(checkUsersLikeDislikeComment(cmnt._id, cmnt.doc));
-      }
+      dispatch(
+        fetchCommentsSuccess(
+          res.data.data.docs,
+          forDoc,
+          docId,
+          res.data.totalNumOfData,
+          currentPage
+        )
+      );
+      // for (let cmnt of res.data.data.docs) {
+      //   dispatch(checkUsersLikeDislikeComment(cmnt._id, cmnt.doc));
+      // }
     } catch (err) {
       console.log(err);
     }

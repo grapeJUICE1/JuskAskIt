@@ -7,6 +7,7 @@ exports.createComment = handlerFactory.createOne(Comment, [
   'for',
   'content',
   'doc',
+  'postId',
 ]);
 exports.getCommentOfPost = handlerFactory.getAll(
   Comment,
@@ -18,7 +19,7 @@ exports.getCommentOfPost = handlerFactory.getAll(
 );
 exports.getCommentOfAnswer = handlerFactory.getAll(
   Comment,
-  ['postsComments'],
+  ['postsComments', 'totalNumOfData'],
   {
     for: 'Answer',
   },

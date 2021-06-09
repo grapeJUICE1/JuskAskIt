@@ -34,20 +34,7 @@ class Answers extends PureComponent {
       this.PER_PAGE
     );
   };
-
   componentDidUpdate = (prevProps, prevState) => {
-    if (
-      prevProps.post !== this.props.post &&
-      (prevProps.post.title !== this.props.post.title ||
-        this.props.post.fetchAnswers)
-    ) {
-      this.props.onFetchAnswers(
-        this.props.postId,
-        this.state.sortBy,
-        this.state.currentPage,
-        this.PER_PAGE
-      );
-    }
     if (
       prevState.sortBy !== this.state.sortBy ||
       prevState.currentPage !== this.state.currentPage
@@ -74,7 +61,6 @@ class Answers extends PureComponent {
     this.setState({ currentPage: 0 });
   };
   handlePageClick = ({ selected }) => {
-    console.log(selected, selected + 1);
     this.setState({ currentPage: selected + 1 });
   };
   sortBest = (e) => {
@@ -123,7 +109,14 @@ class Answers extends PureComponent {
                   overlay={
                     <Tooltip id={`tooltip-right`}>
                       {this.props.post.bestAnswer === ans._id
-                        ? 'You accepted this answer'
+                        ? `${
+                            this.props.post.postedBy?._id ===
+                            this.props.user?._id
+                              ? 'You accepted this answer'
+                              : 'The owner of this question accepted this as the best Answer'
+                          } on ${formatDate(
+                            this.props.post.bestAnswerAcceptedAt
+                          )}`
                         : 'Make this answer the best answer if it solved your problem or was the most useful answer of all the answers'}
                     </Tooltip>
                   }
@@ -239,11 +232,14 @@ class Answers extends PureComponent {
               )}
             </div>
             <br />
+            {console.log(ans.comments)}
             <Comments
               id={ans._id}
+              key={ans.comments?.length}
+              totalNumOfComments={ans.totalNumOfComments}
               comments={ans.comments}
+              newCmntClass={ans.newCmntClass}
               forDoc="answer"
-              fetchComments={this.props.onFetchComments}
             />
 
             <hr />
@@ -408,8 +404,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(actions.fetchAnswers(id, sortBy, currentPage, perPagePosts)),
     onLikeDislikeAnswer: (id, likeordislike) =>
       dispatch(actions.LikeDislikeAnswer(id, likeordislike)),
-    onFetchComments: (id, forDoc) =>
-      dispatch(actions.fetchComments(id, forDoc)),
+
     onResetEditSuccess: () => dispatch(actions.resetEditSuccess()),
     onDelete: (type, postId) => dispatch(actions.deletePost(type, postId)),
     onSubmitPost: (

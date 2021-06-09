@@ -132,11 +132,23 @@ const fetchCommentsSuccess = (state, action) => {
   if (answersCopy[updatedAnswerIndex] === undefined) {
     return state;
   }
-  answersCopy[updatedAnswerIndex].comments = action.comments;
+  answersCopy[updatedAnswerIndex].newCmntClass = '';
+  if (answersCopy[updatedAnswerIndex].currentPage) {
+    if (answersCopy[updatedAnswerIndex].currentPage < action.currentPage) {
+      answersCopy[updatedAnswerIndex].comments.push(...action.comments);
+      answersCopy[updatedAnswerIndex].newCmntClass = 'fade-it';
+    } else {
+      answersCopy[updatedAnswerIndex].comments = action.comments;
+    }
+  } else {
+    answersCopy[updatedAnswerIndex].comments = action.comments;
+  }
+  console.log(answersCopy[updatedAnswerIndex]);
+  answersCopy[updatedAnswerIndex].totalNumOfComments =
+    action.totalNumOfComments;
+  answersCopy[updatedAnswerIndex].currentPage = action.currentPage;
 
   return updateObj(state, {
-    comments: action.comments,
-
     answers: answersCopy,
   });
 };

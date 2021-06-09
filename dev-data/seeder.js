@@ -1,3 +1,8 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable guard-for-in */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-plusplus */
+/* eslint-disable no-await-in-loop */
 /* eslint-disable prettier/prettier */
 /* eslint-disable no-console */
 /* eslint-disable prettier/prettier */
@@ -30,113 +35,115 @@ mongoose
   });
 
 const importData = async () => {
-  try {
-    function genTag() {
-      const lol = [
-        'javascript',
-        'python',
-        'faunadb',
-        'java',
-        'aws',
-        'c#',
-        'lol',
-        'elasticsearch',
-        'html',
-        'css',
-        'graphql',
-        'c++',
-        'c',
-        'arduino',
-        'azure',
-        'cloud',
-        'docker',
-        'kubernetes',
-        'hello',
-        'rest',
-        'pandas',
-        'numpy',
-        'tensorflow',
-        'scikit-learn',
-        'hasura',
-        'mongoose',
-        'database',
-        'sql',
-        'mysql',
-        'postgresql',
-        'wordpress',
-        'drupal',
-        'php',
-        'google cloud platform',
-        'minecraft',
-        'unity',
-        'unreal-engine',
-        'webdev',
-        'soap',
-        'oop',
-        'fp',
-        'photoshop',
-        'google',
-        'algorithms',
-        'data-structures',
-        'ds&algo',
-        'react',
-        'angular',
-        'vue',
-        'react-native',
-        'svelte',
-        'emberjs',
-        'mvc',
-        'nodejs',
-        'django',
-        'flask',
-        'postman',
-        'apollo',
-        'apache-spark',
-        'apache-benchmark',
-        'redis',
-        'neo4j',
-        'xamarin',
-        'kotlin',
-        'ios',
-        'swift',
-        'android',
-        'dart',
-        'flutter',
-        'gdscript',
-        'godot',
-        'pygame',
-        'lua',
-        'love2d',
-        'opengl',
-        'data-science',
-        'machine-learning',
-        'assembly',
-        'ssd',
-        'julia',
-        'golang',
-        'turtle',
-        'graphics',
-        'ram',
-        'hardware',
-        'math',
-        'physics',
-        'server',
-        'linux',
-        'ethical-hacking',
-        'kali-linux',
-        'shell',
-        'oculus',
-        'shader',
-      ];
-      const i = [];
-      s = [1, 2, 3, 4, 5];
-      for (let j = 0; j < s[Math.floor(Math.random() * s.length)]; j++) {
-        i.push(lol[Math.floor(Math.random() * lol.length)]);
-      }
-
-      return [...new Set(i)];
+  function genTag() {
+    const lol = [
+      'javascript',
+      'python',
+      'faunadb',
+      'java',
+      'aws',
+      'c#',
+      'lol',
+      'elasticsearch',
+      'html',
+      'css',
+      'graphql',
+      'c++',
+      'c',
+      'arduino',
+      'azure',
+      'cloud',
+      'docker',
+      'kubernetes',
+      'hello',
+      'rest',
+      'pandas',
+      'numpy',
+      'tensorflow',
+      'scikit-learn',
+      'hasura',
+      'mongoose',
+      'database',
+      'sql',
+      'mysql',
+      'postgresql',
+      'wordpress',
+      'drupal',
+      'php',
+      'google cloud platform',
+      'minecraft',
+      'unity',
+      'unreal-engine',
+      'webdev',
+      'soap',
+      'oop',
+      'fp',
+      'photoshop',
+      'google',
+      'algorithms',
+      'data-structures',
+      'ds&algo',
+      'react',
+      'angular',
+      'vue',
+      'react-native',
+      'svelte',
+      'emberjs',
+      'mvc',
+      'nodejs',
+      'django',
+      'flask',
+      'postman',
+      'apollo',
+      'apache-spark',
+      'apache-benchmark',
+      'redis',
+      'neo4j',
+      'xamarin',
+      'kotlin',
+      'ios',
+      'swift',
+      'android',
+      'dart',
+      'flutter',
+      'gdscript',
+      'godot',
+      'pygame',
+      'lua',
+      'love2d',
+      'opengl',
+      'data-science',
+      'machine-learning',
+      'assembly',
+      'ssd',
+      'julia',
+      'golang',
+      'turtle',
+      'graphics',
+      'ram',
+      'hardware',
+      'math',
+      'physics',
+      'server',
+      'linux',
+      'ethical-hacking',
+      'kali-linux',
+      'shell',
+      'oculus',
+      'shader',
+    ];
+    const i = [];
+    const s = [1, 2, 3, 4, 5];
+    for (let j = 0; j < s[Math.floor(Math.random() * s.length)]; j++) {
+      i.push(lol[Math.floor(Math.random() * lol.length)]);
     }
+
+    return [...new Set(i)];
+  }
+  try {
+    // eslint-disable-next-line no-plusplus
     for (let i = 0; i < 40; i++) {
+      // eslint-disable-next-line no-await-in-loop
       await User.create({
         name: faker.name.findName(),
         email: faker.internet.email(),
@@ -157,7 +164,7 @@ const importData = async () => {
     }
     const users = await User.find({});
     for (let i = 0; i < 60; i++) {
-      let content = faker.lorem.paragraph(5);
+      const content = faker.lorem.paragraph(5);
       const p = await Post.create({
         title: faker.lorem.sentence(),
         content: content,
@@ -171,7 +178,7 @@ const importData = async () => {
 
     for (let i = 0; i < 40; i++) {
       const post = posts[Math.floor(Math.random() * posts.length)];
-      let content = faker.lorem.paragraph(5);
+      const content = faker.lorem.paragraph(5);
       const answer = await Answer.create({
         content,
         contentWordCount: content.length,
@@ -186,7 +193,7 @@ const importData = async () => {
 
     const answers = await Answer.find({});
     for (let i = 0; i < 200; i++) {
-      let forModel = ['Post', 'Answer'][Math.floor(Math.random() * 2)];
+      const forModel = ['Post', 'Answer'][Math.floor(Math.random() * 2)];
       let doc;
       if (forModel === 'Post') {
         doc = posts[Math.floor(Math.random() * posts.length)].id;
@@ -203,14 +210,12 @@ const importData = async () => {
     }
 
     for (let i = 0; i < 60; i++) {
-      let forModel = 'Answer';
-      let doc;
-
-      doc = answers[Math.floor(Math.random() * answers.length)].id;
-
+      const forModel = 'Answer';
+      const doc = answers[Math.floor(Math.random() * answers.length)];
       await Comment.create({
         for: forModel,
-        doc,
+        doc: doc._id,
+        post: doc.post,
         content: faker.lorem.sentence(),
         postedBy: users[Math.floor(Math.random() * users.length)].id,
       });
@@ -226,7 +231,7 @@ const deleteData = async () => {
   try {
     await User.deleteMany({});
     await Post.deleteMany({});
-    for (let ans in await Answer.find({})) {
+    for (const ans in await Answer.find({})) {
       await Answer.findByIdAndDelete(ans._id);
     }
     await Comment.deleteMany({});

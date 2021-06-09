@@ -23,25 +23,21 @@ const tagRouter = require('./routes/tagRoutes');
 
 // initializing express
 const app = express();
-
-app.use(cors({ credentials: true, origin: true }));
-
 // logging on dev environment
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+app.use(cors({ credentials: true, origin: true }));
 // middlewares related to secuirity
 app.use(helmet());
-
 // initializing body parser and more secuirity middlewares
 app.use(express.json({ limit: '20kb' }));
 app.use(cookieParser());
 app.use(mongoSanitize());
 
-//
-
 // middlewares for routes in api
+
 app.use('/api/v1/posts', postRouter);
 app.use('/api/v1/users', xss(), userRouter);
 app.use('/api/v1/answers', answerRouter);

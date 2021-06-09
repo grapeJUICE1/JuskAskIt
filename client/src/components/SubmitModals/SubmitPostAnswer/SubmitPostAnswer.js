@@ -136,7 +136,7 @@ function SubmitPostAnswer(props) {
               </Form.Group>
               <br />
               {props.type !== 'answer' && props.type !== 'answer-edit' && (
-                <>
+                <Form.Group>
                   <Form.Label>Tags</Form.Label>
                   <div className={styles.tags_input}>
                     <ul className={styles.tags}>
@@ -152,7 +152,7 @@ function SubmitPostAnswer(props) {
                         </li>
                       ))}
                     </ul>
-                    <input
+                    <Form.Control
                       type="text"
                       placeholder="Enter tags"
                       className="border-0"
@@ -167,7 +167,7 @@ function SubmitPostAnswer(props) {
                   <Form.Text className="text-muted">
                     Enter atleast 1 tag , u can enter upto 5 tags at highest
                   </Form.Text>
-                </>
+                </Form.Group>
               )}
               <br />
               <Button onClick={() => handleSubmit()}>Submit</Button>

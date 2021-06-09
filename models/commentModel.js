@@ -13,6 +13,7 @@ const commentSchema = mongoose.Schema(
       required: ['True', 'Chose wether to comment a post or answer'],
     },
     doc: { type: mongoose.Schema.ObjectId, refPath: 'for', required: true },
+    postId: { type: mongoose.Schema.ObjectId, ref: 'Post', required: true },
     content: {
       type: String,
       required: [true, 'Please tell what you want to comment'],

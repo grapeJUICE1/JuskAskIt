@@ -59,7 +59,7 @@ const postSchema = mongoose.Schema(
         "You need to have atleast 1 tag and can't have more than 5 tags",
       ],
     },
-    bestAnswerAcceptedAt: Date,
+    bestAnswerAcceptedAt: { type: Date, default: Date.now() },
   },
   {
     toJSON: { virtuals: true },
