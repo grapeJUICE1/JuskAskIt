@@ -126,7 +126,9 @@ class SubmitPostAnswer extends PureComponent {
                     this.setState({ contentWordCount: contentWordCount });
                   }}
                   editorState={this.state.editorState}
-                  setEditorState={this.state.setEditorState}
+                  setEditorState={(editorState) =>
+                    this.setState({ editorState: editorState })
+                  }
                 />
                 <Form.Text className="text-muted">
                   your content should be atleast 25 words
