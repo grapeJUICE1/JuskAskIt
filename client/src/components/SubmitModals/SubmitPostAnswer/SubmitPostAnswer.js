@@ -10,6 +10,7 @@ import styles from './SubmitPostAnswer.module.scss';
 import Loader from '../../UI/Loader/Loader';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
+import { withAlert } from 'react-alert';
 
 class SubmitPostAnswer extends PureComponent {
   blocksFromPrevHTML = htmlToDraft(`${this.props.editedContent || ''}`);
@@ -30,6 +31,7 @@ class SubmitPostAnswer extends PureComponent {
   };
 
   handleSubmit = async () => {
+    console.log(this.submitType, this.postToEditId);
     await this.props.onSubmitPost(
       this.state.title,
       DOMPurify.sanitize(this.state.content),
@@ -37,7 +39,7 @@ class SubmitPostAnswer extends PureComponent {
       this.state.tags,
       this.state.contentWordCount,
       this.submitType,
-      this.props.postId
+      this.postToEditId
     );
   };
 
@@ -55,7 +57,7 @@ class SubmitPostAnswer extends PureComponent {
 
   render() {
     if (this.props.editSuccessful || this.props.submitSuccessful) {
-      alert.success(
+      this.props.alert.success(
         `${
           this.submitType === 'answer-edit' || this.submitType === 'edit'
             ? 'edited'
@@ -66,7 +68,7 @@ class SubmitPostAnswer extends PureComponent {
     }
 
     if (this.props.newPostUrl) {
-      alert.success('Post Submitted Succesfully');
+      this.props.alert.success('Post Submitted Succesfully');
       this.props.onResetEditSuccess();
       setTimeout(() => {
         this.setState({ redirect: this.props.newPostUrl });
@@ -75,7 +77,6 @@ class SubmitPostAnswer extends PureComponent {
 
     return (
       <>
-        {console.log(this.props.match.params)}
         {this.state.redirect ? <Redirect to={this.state.redirect} /> : ''}
         <h3 className={styles.heading}>
           <strong>
@@ -192,14 +193,33 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    onSubmitPost: (title, content, userId, tags, contentWordCount) =>
+    onSubmitPost: (
+      title,
+      content,
+      userId,
+      tags,
+      contentWordCount,
+      type,
+      postId
+    ) =>
       dispatch(
-        actions.submitPost(title, content, userId, tags, contentWordCount)
+        actions.submitPost(
+          title,
+          content,
+          userId,
+          tags,
+          contentWordCount,
+          type,
+          postId
+        )
       ),
     onResetEditSuccess: () => dispatch(actions.resetEditSuccess()),
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(SubmitPostAnswer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withAlert()(SubmitPostAnswer));
 
 /* <SubmitPostAnswer
 type={

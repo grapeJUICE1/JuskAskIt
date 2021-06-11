@@ -133,7 +133,7 @@ export const submitPost = (
   userId,
   tags,
   contentWordCount,
-  type = undefined,
+  type,
   postId = undefined,
   forDoc = undefined,
   bestAnswer = undefined,
@@ -142,7 +142,6 @@ export const submitPost = (
   return async (dispatch) => {
     dispatch(submitPostStart());
     try {
-      console.log(postIdForComment);
       let data = {
         title,
         content,
@@ -154,6 +153,7 @@ export const submitPost = (
         postId: postIdForComment,
       };
       let res;
+      console.log(type, postId);
       if (type === 'edit') {
         res = await axios.patch(`/posts/${postId}`, data);
       } else if (type === 'answer') {
