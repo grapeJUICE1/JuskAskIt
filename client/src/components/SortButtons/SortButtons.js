@@ -14,7 +14,11 @@ const SortButtons = (props) => {
     { label: 'Popularity', func: props.sortByPopularity },
     { label: 'Best', func: props.sortBest },
   ];
-  const [radioValue, setRadioValue] = useState(1);
+  const [radioValue, setRadioValue] = useState(
+    props.default
+      ? sortOptions.findIndex((el) => el.label === props.default)
+      : 1
+  );
   return (
     <Col
       xl={props.isAnswers ? 12 : 7}
@@ -31,6 +35,7 @@ const SortButtons = (props) => {
       })}
     >
       <div>
+        {console.log(sortOptions.findIndex((el) => el.label === props.default))}
         <ButtonGroup toggle className="flex-wrap">
           {sortOptions.map((srtOpt, key) => {
             if (!srtOpt.func) return null;

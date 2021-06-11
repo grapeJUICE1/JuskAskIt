@@ -15,6 +15,7 @@ import Users from './containers/Users/Users';
 import TagsPage from './containers/TagsPage/TagsPage';
 import { connect } from 'react-redux';
 import * as actions from './store/actions/index';
+import SubmitPostAnswer from './components/SubmitModals/SubmitPostAnswer/SubmitPostAnswer';
 
 function App(props) {
   useEffect(() => {
@@ -35,6 +36,7 @@ function App(props) {
         <Route path="/signup" component={Signup} />
         <Route path="/profile/:userID" component={Profile} />
         <Route path="/users" component={Users} />
+        <Route path="/submit/:type/:postId" component={SubmitPostAnswer} />
       </Switch>
       <CookieConsent>
         This website uses cookies to enhance the user experience.

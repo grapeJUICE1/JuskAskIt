@@ -2,8 +2,6 @@
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
-  padding: 0 0.5rem;
-  border: 1px solid rgb(214, 216, 218);
   border-radius: 6px;
   &:focus-within {
     border: 1px solid #0052cc;
@@ -57,9 +55,38 @@
     cursor: pointer;
   }
 }
-
+.container {
+  margin-top: 2rem;
+  border: 1px solid rgb(189, 190, 197);
+  padding: 1rem;
+  border-radius: 10px;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2rem;
+}
+.heading {
+  margin-top: 5rem;
+  width: 80%;
+  padding: 1rem;
+  margin-left: auto;
+  margin-right: auto;
+}
 @media screen and (max-width: 567px) {
   .tags-input {
     width: calc(100vw - 32px);
+  }
+}
+@media screen and (max-width: 720px) {
+  .container {
+    width: 100%;
+  }
+  .heading {
+    width: 100%;
+  }
+}
+@media screen and (max-width: 319px) {
+  .heading {
+    padding-left: 1.7rem;
   }
 }

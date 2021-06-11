@@ -13,10 +13,6 @@
   margin-top: 5rem;
 }
 
-.wrapper-class {
-  padding: 1rem;
-  border: 1px solid #ccc;
-}
 .editor-class {
   background-color: lightgray;
   padding: 40px 1rem;
@@ -30,6 +26,9 @@
 }
 .rdw-option-wrapper {
   border: none;
+  padding: 3px;
+  height: 15px;
+  min-width: 0;
 }
 .preview {
   padding: 1rem;
@@ -45,4 +44,8 @@
 }
 .rdw-dropdown-wrapper {
   width: 6.87rem;
+  height: 1.875rem;
+}
+.rdw-dropdownoption-default {
+  font-size: 1rem;
 }

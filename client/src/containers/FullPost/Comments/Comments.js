@@ -19,6 +19,7 @@ class Comments extends PureComponent {
     currentPage: 1,
   };
   componentDidMount() {
+    console.log('restarted bitch');
     if (!this.props.comments)
       this.props.onFetchComments(
         this.props.id,
@@ -27,6 +28,7 @@ class Comments extends PureComponent {
         this.PER_PAGE
       );
   }
+
   componentDidUpdate = (prevProps, prevState) => {
     // if (prevProps.id !== this.props.id) {
     //   this.props.onFetchComments(this.props.id, this.props.forDoc);

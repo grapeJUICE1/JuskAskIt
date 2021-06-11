@@ -3,7 +3,6 @@ import { Container, Row, Col, Button, FormControl } from 'react-bootstrap';
 import ReactPaginate from 'react-paginate';
 import SortButtons from '../../components/SortButtons/SortButtons';
 import Post from '../../components/Post/Post';
-import SubmitPost from '../../components/SubmitModals/SubmitPostAnswer/SubmitPostAnswer';
 import { connect } from 'react-redux';
 import queryString from 'query-string';
 
@@ -196,29 +195,7 @@ class Posts extends Component {
             <Col lg={5}>
               {title}
               <h6 className="mt-4">{this.props.totalPosts} questions</h6>
-              {this.props.user && !this.props.isProfile && (
-                <>
-                  <Button
-                    onClick={() => {
-                      this.handleShow();
-                    }}
-                  >
-                    Submit Post
-                  </Button>
-                  <SubmitPost
-                    onSubmitPost={this.props.onSubmitPost}
-                    userId={this.props.user._id}
-                    error={this.props.submitError}
-                    type="post"
-                    loading={this.props.submitLoading}
-                    show={this.state.show}
-                    handleShow={this.handleShow}
-                    handleClose={() => this.handleClose()}
-                    onResetEditSuccess={this.props.onResetEditSuccess}
-                    newPostUrl={this.props.newPostUrl}
-                  />
-                </>
-              )}
+
               {!this.props.isProfile && (
                 <FormControl
                   size="lg"
@@ -248,9 +225,6 @@ const mapStateToProps = (state) => {
     posts: state.posts.posts,
     error: state.posts.error,
     loading: state.posts.loading,
-    submitError: state.fullPost.submitError,
-    submitLoading: state.fullPost.submitLoading,
-    newPostUrl: state.fullPost.newPostUrl,
     user: state.auth.user,
   };
 };
@@ -275,10 +249,6 @@ const mapDispatchToProps = (dispatch) => {
         )
       ),
     onResetEditSuccess: () => dispatch(actions.resetEditSuccess()),
-    onSubmitPost: (title, content, userId, tags, contentWordCount) =>
-      dispatch(
-        actions.submitPost(title, content, userId, tags, contentWordCount)
-      ),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(checkAuth(Posts));

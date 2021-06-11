@@ -143,7 +143,6 @@ const fetchCommentsSuccess = (state, action) => {
   } else {
     answersCopy[updatedAnswerIndex].comments = action.comments;
   }
-  console.log(answersCopy[updatedAnswerIndex]);
   answersCopy[updatedAnswerIndex].totalNumOfComments =
     action.totalNumOfComments;
   answersCopy[updatedAnswerIndex].currentPage = action.currentPage;

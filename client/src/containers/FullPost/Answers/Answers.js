@@ -2,7 +2,7 @@ import React, { Fragment, PureComponent } from 'react';
 import { Button, Container, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { withRouter } from 'react-router';
+import { Redirect, withRouter } from 'react-router';
 import { Image } from 'cloudinary-react';
 import { withAlert } from 'react-alert';
 import * as actions from '../../../store/actions/index';
@@ -54,9 +54,7 @@ class Answers extends PureComponent {
     this.setState({ submit: false });
     this.setState({ editQues: false });
   };
-  handleShow = () => {
-    this.setState({ show: true });
-  };
+
   setDefaultCurrentPage = () => {
     this.setState({ currentPage: 0 });
   };
@@ -78,10 +76,12 @@ class Answers extends PureComponent {
   sortOldest = (e) => {
     this.setState({ sortBy: 'createdAt' });
   };
+
   render() {
     let sortButtons = (
       <>
         <SortButtons
+          default="Best"
           sortBest={this.sortBest}
           sortNewest={this.sortNewest}
           sortOldest={this.sortOldest}
@@ -215,7 +215,6 @@ class Answers extends PureComponent {
                     variant="outline-secondary"
                     onClick={() => {
                       this.setState({ ansToEdit: ans });
-                      this.handleShow();
                     }}
                   >
                     edit
@@ -235,7 +234,6 @@ class Answers extends PureComponent {
             {console.log(ans.comments)}
             <Comments
               id={ans._id}
-              key={ans.comments?.length}
               totalNumOfComments={ans.totalNumOfComments}
               comments={ans.comments}
               newCmntClass={ans.newCmntClass}
@@ -267,7 +265,6 @@ class Answers extends PureComponent {
                 variant="outline-secondary"
                 onClick={() => {
                   this.setState({ editQues: true });
-                  this.handleShow();
                 }}
               >
                 edit
@@ -302,7 +299,6 @@ class Answers extends PureComponent {
                   size="lg"
                   onClick={() => {
                     this.setState({ submit: true });
-                    this.handleShow();
                   }}
                 >
                   Submit Answer
@@ -332,8 +328,8 @@ class Answers extends PureComponent {
           {(this.props.user && this.state.ansToEdit) ||
           (this.props.user && this.state.submit) ||
           (this.props.user && this.state.editQues) ? (
-            <SubmitPostAnswer
-              type={
+            <Redirect
+              to={`/submit/${
                 this.state.ansToEdit
                   ? 'answer-edit'
                   : this.state.editQues
@@ -341,37 +337,11 @@ class Answers extends PureComponent {
                   : this.state.submit
                   ? 'answer'
                   : null
-              }
-              postId={
+              }/${
                 this.state.ansToEdit
                   ? this.state.ansToEdit._id
                   : this.props.post._id
-              }
-              editedTitle={this.state.editQues ? this.props.post.title : null}
-              editedTags={this.state.editQues ? this.props.post.tags : null}
-              editedContent={
-                // this.props.post.content
-                this.state.editQues
-                  ? this.props.post.content
-                  : this.state.ansToEdit
-                  ? this.state.ansToEdit.content
-                  : ''
-              }
-              show={this.state.show}
-              handleShow={this.handleShow}
-              handleClose={() => this.handleClose()}
-              editSuccessful={
-                !this.state.submit ? this.props.editSuccessful : null
-              }
-              submitSuccessful={
-                !this.state.ansToEdit && !this.state.editQues
-                  ? this.props.submitSuccessful
-                  : null
-              }
-              onSubmitPost={this.props.onSubmitPost}
-              error={this.props.submitError}
-              loading={this.props.submitLoading}
-              onResetEditSuccess={this.props.onResetEditSuccess}
+              }`}
             />
           ) : null}
         </Container>
