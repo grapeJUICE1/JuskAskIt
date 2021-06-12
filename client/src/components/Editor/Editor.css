@@ -1,5 +1,4 @@
 .Editor-header {
-  background-color: #282c34;
   min-height: 5vh;
   max-height: 100px;
   display: flex;
@@ -7,14 +6,12 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
   margin-bottom: 5vh;
   text-align: center;
   margin-top: 5rem;
 }
 
 .editor-class {
-  background-color: lightgray;
   padding: 40px 1rem;
   border: 1px solid #ccc;
 }
@@ -23,12 +20,22 @@
 }
 .rdw-editor-toolbar {
   padding: none;
+  background: none;
+  border: 1px solid #ccc;
 }
 .rdw-option-wrapper {
   border: none;
   padding: 3px;
   height: 15px;
   min-width: 0;
+}
+.rdw-option-wrapper:hover {
+  background-color: rgb(131, 207, 200);
+  opacity: 0.8;
+}
+.rdw-option-active {
+  background-color: turquoise;
+  opacity: 0.8;
 }
 .preview {
   padding: 1rem;

@@ -2,25 +2,35 @@ import updateObj from './../../utils/updateObj';
 import * as actionTypes from '../actions/actionTypes';
 
 const initialState = {
-  title: undefined,
-  editedTitle: undefined,
-  editedTags: undefined,
-  editedContent: undefined,
+  docToEdit: null,
+  loading: false,
 };
 
-const editStartHandler = (state, action) => {
+const fetchDocToEditStart = (state, action) => {
   return updateObj(state, {
-    title: action.title,
-    editedTitle: action.editedTitle,
-    editedTags: action.editedTags,
-    editedContent: action.editedContent,
+    loading: true,
+  });
+};
+const fetchDocToEditSuccess = (state, action) => {
+  return updateObj(state, {
+    docToEdit: action.doc,
+    loading: false,
+  });
+};
+const fetchDocToEditFail = (state, action) => {
+  return updateObj(state, {
+    loading: false,
   });
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.LOGIN_START:
-      return editStartHandler(state, action);
+    case actionTypes.FETCH_DOC_TO_EDIT_IN_EDITOR_START:
+      return fetchDocToEditStart(state, action);
+    case actionTypes.FETCH_DOC_TO_EDIT_IN_EDITOR_SUCCESS:
+      return fetchDocToEditSuccess(state, action);
+    case actionTypes.FETCH_DOC_TO_EDIT_IN_EDITOR_FAIL:
+      return fetchDocToEditFail(state, action);
     default:
       return state;
   }

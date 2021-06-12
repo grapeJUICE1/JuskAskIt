@@ -15,7 +15,7 @@ const initialState = {
   deleteLoading: false,
   deleteSuccessful: false,
   editSuccessful: false,
-  newPostUrl: null,
+  redirectTo: null,
 };
 
 const fetchFullPostStartHandler = (state, action) => {
@@ -50,7 +50,7 @@ const submitPostsStartHandler = (state, action) => {
     submitLoading: action.resetAfterEdit ? false : true,
     submitSuccessful: false,
     editSuccessful: false,
-    newPostUrl: null,
+    redirectTo: null,
     submitError: null,
     deleteError: null,
     deleteLoading: false,
@@ -68,10 +68,14 @@ const submitPostsSuccessHandler = (state, action) => {
       action.submittedPostType === 'comment-edit'
         ? state.post
         : action.post,
-    newPostUrl:
+    redirectTo:
       action.submittedPostType === 'post'
-        ? null
-        : `/posts/post/${action.post._id}/${action.post.slug}`,
+        ? `/posts/post/${action.post._id}/${action.post.slug}`
+        : action.submittedPostType === 'answer' ||
+          action.submittedPostType === 'answer-edit' ||
+          action.submittedPostType === 'edit'
+        ? `/posts/post/${action.redirectToId}#${action.docId}`
+        : null,
     editSuccessful:
       action.submittedPostType === 'edit' ||
       action.submittedPostType === 'answer-edit' ||
@@ -80,7 +84,8 @@ const submitPostsSuccessHandler = (state, action) => {
         : false,
     submitSuccessful:
       action.submittedPostType === 'answer' ||
-      action.submittedPostType === 'comment'
+      action.submittedPostType === 'comment' ||
+      action.submittedPostType === 'post'
         ? true
         : false,
   });

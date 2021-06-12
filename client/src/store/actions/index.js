@@ -12,3 +12,4 @@ export { fetchComments, likeDislikeComments } from './comments';
 export { getUserData, editUserData, uploadPhoto } from './profile';
 export { fetchUsers } from './users';
 export { fetchTags } from './tags';
+export { fetchDocToEdit } from './editor';

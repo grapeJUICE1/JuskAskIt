@@ -114,11 +114,18 @@ export const submitPostFail = (error) => {
     error,
   };
 };
-export const submitPostSuccess = (post, submittedPostType) => {
+export const submitPostSuccess = (
+  post,
+  submittedPostType,
+  redirectToId,
+  docId
+) => {
   return {
     type: actionTypes.SUBMIT_POST_SUCCESS,
     post,
     submittedPostType,
+    redirectToId,
+    docId,
   };
 };
 
@@ -134,14 +141,15 @@ export const submitPost = (
   tags,
   contentWordCount,
   type,
-  postId = undefined,
+  docId = undefined,
   forDoc = undefined,
   bestAnswer = undefined,
-  postIdForComment = undefined
+  postId = undefined
 ) => {
   return async (dispatch) => {
     dispatch(submitPostStart());
     try {
+      console.log(postId);
       let data = {
         title,
         content,
@@ -150,25 +158,24 @@ export const submitPost = (
         contentWordCount,
         for: forDoc,
         bestAnswer,
-        postId: postIdForComment,
+        postId,
       };
       let res;
-      console.log(type, postId);
+      console.log(type, docId);
       if (type === 'edit') {
-        res = await axios.patch(`/posts/${postId}`, data);
+        res = await axios.patch(`/posts/${docId}`, data);
       } else if (type === 'answer') {
-        res = await axios.post(`/answers/${postId}/create-answer`, data);
+        res = await axios.post(`/answers/${docId}/create-answer`, data);
       } else if (type === 'answer-edit') {
-        res = await axios.patch(`/answers/${postId}`, data);
+        res = await axios.patch(`/answers/${docId}`, data);
       } else if (type === 'comment') {
-        res = await axios.post(`/comments/${postId}/create-comment`, data);
+        res = await axios.post(`/comments/${docId}/create-comment`, data);
       } else if (type === 'comment-edit') {
-        res = await axios.patch(`/comments/${postId}`, data);
+        res = await axios.patch(`/comments/${docId}`, data);
       } else {
         res = await axios.post(`/posts/create-post`, data);
       }
-
-      dispatch(submitPostSuccess(res?.data?.data?.doc, type));
+      dispatch(submitPostSuccess(res?.data?.data?.doc, type, postId, docId));
     } catch (err) {
       console.log(err);
       if (err.response.data.message)
