@@ -3,11 +3,11 @@ import { EditorState, ContentState } from 'draft-js';
 import htmlToDraft from 'html-to-draftjs';
 
 import { Button, Form, Container } from 'react-bootstrap';
-import * as actions from '../../../store/actions/index';
+import * as actions from '../../store/actions/index';
 import DOMPurify from 'dompurify';
-import Editor from '../../Editor/Editor';
-import styles from './SubmitPostAnswer.module.scss';
-import Loader from '../../UI/Loader/Loader';
+import Editor from '../../components/Editor/Editor';
+import styles from './Submit.module.scss';
+import Loader from '../../components/UI/Loader/Loader';
 import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { withAlert } from 'react-alert';
@@ -20,6 +20,7 @@ class SubmitPostAnswer extends PureComponent {
   postToEditId = this.props.match.params.postId;
 
   state = {
+    lol: 1,
     redirect: null,
     content: '',
     contentWordCount: 0,
@@ -33,6 +34,19 @@ class SubmitPostAnswer extends PureComponent {
       this.props.onFetchDocToEdit(this.postToEditId, this.submitType);
   };
   componentDidUpdate = (prevProps) => {
+    if (this.props.redirectTo) {
+      if (!this.state.redirect) {
+        this.setState({ redirect: this.props.redirectTo });
+        this.props.alert.success(
+          `${
+            this.submitType === 'answer-edit' || this.submitType === 'edit'
+              ? 'edited'
+              : 'posted'
+          } Succesfully`
+        );
+      }
+      this.props.onResetEditSuccess();
+    }
     if (prevProps.docToEdit !== this.props.docToEdit) {
       let blocksFromPrevHTML = htmlToDraft(
         `${this.props.docToEdit.content || ''}`
@@ -50,7 +64,6 @@ class SubmitPostAnswer extends PureComponent {
     }
   };
   handleSubmit = async () => {
-    console.log(this.submitType, this.postToEditId);
     await this.props.onSubmitPost(
       this.state.title,
       DOMPurify.sanitize(this.state.content),
@@ -76,20 +89,6 @@ class SubmitPostAnswer extends PureComponent {
   };
 
   render() {
-    if (this.props.redirectTo) {
-      this.props.alert.success(
-        `${
-          this.submitType === 'answer-edit' || this.submitType === 'edit'
-            ? 'edited'
-            : 'posted'
-        } Succesfully`
-      );
-      this.props.onResetEditSuccess();
-
-      this.props.onResetEditSuccess();
-      this.setState({ redirect: this.props.redirectTo });
-    }
-
     return (
       <>
         {this.state.redirect ? <Redirect to={this.state.redirect} /> : ''}

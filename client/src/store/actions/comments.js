@@ -38,7 +38,7 @@ export const fetchComments = (docId, forDoc, currentPage, perPagePosts) => {
         `/comments/${docId}/get-comments-of-${forDoc}`,
         {
           params: {
-            sort: '-voteCount',
+            sort: '-voteCount -createdAt',
             limit: perPagePosts,
             page: currentPage,
           },

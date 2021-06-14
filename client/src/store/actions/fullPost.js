@@ -178,7 +178,7 @@ export const submitPost = (
       dispatch(submitPostSuccess(res?.data?.data?.doc, type, postId, docId));
     } catch (err) {
       console.log(err);
-      if (err.response.data.message)
+      if (err.response?.data?.message)
         dispatch(submitPostFail(err?.response?.data?.message));
     }
   };

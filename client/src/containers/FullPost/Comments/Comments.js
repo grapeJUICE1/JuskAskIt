@@ -11,7 +11,7 @@ import Loader from '../../../components/UI/Loader/Loader';
 import { PureComponent } from 'react';
 
 class Comments extends PureComponent {
-  PER_PAGE = 5;
+  PER_PAGE = 10;
   state = {
     edit: '',
     newCmnt: null,
@@ -19,7 +19,6 @@ class Comments extends PureComponent {
     currentPage: 1,
   };
   componentDidMount() {
-    console.log('restarted bitch');
     if (!this.props.comments)
       this.props.onFetchComments(
         this.props.id,
@@ -30,9 +29,14 @@ class Comments extends PureComponent {
   }
 
   componentDidUpdate = (prevProps, prevState) => {
-    // if (prevProps.id !== this.props.id) {
-    //   this.props.onFetchComments(this.props.id, this.props.forDoc);
-    // }
+    if (prevProps.refetchComments !== this.props.refetchComments) {
+      this.props.onFetchComments(
+        this.props.id,
+        'Answer',
+        this.state.currentPage,
+        this.PER_PAGE
+      );
+    }
 
     if (prevState.currentPage !== this.state.currentPage) {
       this.props.onFetchComments(
@@ -66,10 +70,16 @@ class Comments extends PureComponent {
         ) : (
           'Login to add comment'
         )}
+        <br />
+        <br />
+        <br />
+        {this.props.totalNumOfComments || 0} comments
         {this.state.newCmnt ? (
           <>
+            <br />
             <textarea
-              // onBlur={() => setEdit(null)}
+              className="border border-dark"
+              cols="30"
               value={this.state.newCmntContent}
               onChange={(e) => {
                 // this.setState({ newCmnt: true });
@@ -80,6 +90,7 @@ class Comments extends PureComponent {
               variant="link"
               size="sm"
               onClick={() => {
+                this.setState({ newCmnt: null });
                 this.props.onSubmitPost(
                   undefined,
                   this.state.newCmntContent,
@@ -110,10 +121,11 @@ class Comments extends PureComponent {
           ''
         )}
         <hr />
-
         {this.props.comments
           ? this.props.comments.map((cmnt) => (
-              <Fragment key={cmnt._id}>
+              <Fragment
+              // key={cmnt._id}
+              >
                 {!this.props.likeDislikeCommentLoading ? (
                   <LikeDislikeButtons
                     userDidLike={cmnt.userDidLike}
@@ -130,8 +142,10 @@ class Comments extends PureComponent {
                 <small id={cmnt._id} className={this.props.newCmntClass}>
                   {this.state.edit && this.state.edit._id === cmnt._id ? (
                     <>
+                      <br />
                       <textarea
-                        // onBlur={() => setthis.state.Edit(null)}
+                        className="border border-dark"
+                        cols="30"
                         value={this.state.edit.content}
                         onChange={(e) => {
                           this.setState({
@@ -155,6 +169,9 @@ class Comments extends PureComponent {
                             'comment-edit',
                             cmnt._id
                           );
+                          this.setState({
+                            edit: null,
+                          });
                         }}
                       >
                         confirm
@@ -226,12 +243,6 @@ class Comments extends PureComponent {
               this.setState({ currentPage: this.state.currentPage + 1 });
             }}
           >
-            {console.log(
-              'nandato',
-              this.props.id,
-              this.state.currentPage,
-              pageCount
-            )}
             Load More Comments
           </Button>
         ) : null}
@@ -247,6 +258,7 @@ const mapStateToProps = (state) => {
     submitSuccessful: state.fullPost.submitSuccessful,
     submitError: state.fullPost.submitError,
     submitLoading: state.fullPost.submitLoading,
+    refetchComments: state.fullPost.refetchComments,
     user: state.auth.user,
   };
 };

@@ -16,6 +16,7 @@ const initialState = {
   deleteSuccessful: false,
   editSuccessful: false,
   redirectTo: null,
+  refetchComments: 0,
 };
 
 const fetchFullPostStartHandler = (state, action) => {
@@ -88,6 +89,11 @@ const submitPostsSuccessHandler = (state, action) => {
       action.submittedPostType === 'post'
         ? true
         : false,
+    // refetchComments:
+    //   action.submittedPostType === 'comment' ||
+    //   action.submittedPostType === 'comment-edit'
+    //     ? !state.refetchComments
+    //     : state.refetchComments,
   });
 };
 const submitPostsFailHandler = (state, action) => {

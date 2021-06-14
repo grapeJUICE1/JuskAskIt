@@ -138,7 +138,7 @@ exports.getAll = (Model, allowedFields = [], filter = {}, forModel = null) =>
         )
       );
     }
-
+    // console.log(features);
     // sending total number of post in the database with the response
     const totalNumOfData = await new ApiFeatures(
       Model.countDocuments(updatedFilter),
@@ -148,6 +148,8 @@ exports.getAll = (Model, allowedFields = [], filter = {}, forModel = null) =>
     return res.status(200).json({
       status: 'success',
       totalNumOfData: totalNumOfData || null,
+      page: features.page,
+      limit: features.limit,
       results: docs.length,
       data: {
         docs,

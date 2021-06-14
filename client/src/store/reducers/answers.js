@@ -183,7 +183,21 @@ const likeDislikeCommentSuccess = (state, action) => {
     likeDislikeCommentLoading: false,
   });
 };
+const submitPostsSuccessHandler = (state, action) => {
+  if (action.submittedPostType === 'comment') {
+    let answersCopy = JSON.parse(JSON.stringify(state.answers));
+    let updatedAnswerIndex = answersCopy.findIndex(
+      (obj) => obj._id === action.post.doc
+    );
 
+    let answersComments = answersCopy[updatedAnswerIndex].comments;
+    answersComments.unshift(action.post);
+    return updateObj(state, {
+      answers: answersCopy,
+    });
+  }
+  return state;
+};
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.FETCH_ANSWERS_START:
@@ -218,6 +232,8 @@ const reducer = (state = initialState, action) => {
       return likeDislikeCommentFail(state, action);
     case actionTypes.LIKE_DISLIKE_ANSWER_COMMENT_SUCCESS:
       return likeDislikeCommentSuccess(state, action);
+    case actionTypes.SUBMIT_POST_SUCCESS:
+      return submitPostsSuccessHandler(state, action);
 
     default:
       return state;

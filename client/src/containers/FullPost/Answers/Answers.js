@@ -9,7 +9,6 @@ import * as actions from '../../../store/actions/index';
 import { formatDate } from '../../../utils/formatDate';
 import Loader from '../../../components/UI/Loader/Loader';
 import LikeDislikeButtons from '../../../components/LikeDislikeButtons/LikeDislikeButtons';
-import SubmitPostAnswer from '../../../components/SubmitModals/SubmitPostAnswer/SubmitPostAnswer';
 
 import Comments from '../Comments/Comments';
 import styles from './Answers.module.scss';
@@ -17,7 +16,7 @@ import SortButtons from '../../../components/SortButtons/SortButtons';
 import ReactPaginate from 'react-paginate';
 
 class Answers extends PureComponent {
-  PER_PAGE = 5;
+  PER_PAGE = 10;
   state = {
     ansToEdit: null,
     editQues: false,
@@ -231,9 +230,9 @@ class Answers extends PureComponent {
               )}
             </div>
             <br />
-            {console.log(ans.comments)}
             <Comments
               id={ans._id}
+              propToUpdateComponent={ans.comments?.length}
               totalNumOfComments={ans.totalNumOfComments}
               comments={ans.comments}
               newCmntClass={ans.newCmntClass}
@@ -296,7 +295,7 @@ class Answers extends PureComponent {
               <div>
                 <Button
                   variant="dark"
-                  size="lg"
+                  size="md"
                   onClick={() => {
                     this.setState({ submit: true });
                   }}
