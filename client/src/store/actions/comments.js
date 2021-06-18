@@ -34,16 +34,13 @@ export const fetchComments = (docId, forDoc, currentPage, perPagePosts) => {
   return async (dispatch) => {
     dispatch(fetchCommentsStart(forDoc));
     try {
-      const res = await axios.get(
-        `/comments/${docId}/get-comments-of-${forDoc}`,
-        {
-          params: {
-            sort: '-voteCount -createdAt',
-            limit: perPagePosts,
-            page: currentPage,
-          },
-        }
-      );
+      const res = await axios.get(`/answers/${docId}/comments`, {
+        params: {
+          sort: '-voteCount -createdAt',
+          limit: perPagePosts,
+          page: currentPage,
+        },
+      });
       dispatch(
         fetchCommentsSuccess(
           res.data.data.docs,

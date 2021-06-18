@@ -7,21 +7,19 @@
 /* eslint-disable no-console */
 /* eslint-disable prettier/prettier */
 // eslint-disable-next-line prettier/prettier
-const fs = require('fs');
 const faker = require('faker');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const User = require('../models/userModel');
 const Post = require('../models/postModel');
 const Answer = require('../models/answerModel');
-const Tag = require('../models/tagModel');
 const Comment = require('../models/commentModel');
 const LikeDislike = require('../models/likeDislikeModel');
 
 dotenv.config({ path: '../config.env' });
 
 mongoose
-  .connect(process.env.DATABASE_LOCAL, {
+  .connect(process.env.DATABASE_PROD, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
@@ -236,7 +234,7 @@ const deleteData = async () => {
     }
     await Comment.deleteMany({});
     await LikeDislike.deleteMany({});
-    console.log('deleted data successfully😉😉😉');
+    console.log('deleted data successfully...');
   } catch (err) {
     console.log(err);
   }

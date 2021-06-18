@@ -26,7 +26,7 @@ else {
 }
 
 mongoose
-  .connect(databaseURI, {
+  .connect(process.env.DATABASE_PROD, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,

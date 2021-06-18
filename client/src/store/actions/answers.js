@@ -27,7 +27,7 @@ export const fetchAnswers = (postId, sortBy, currentPage, perPagePosts) => {
   return async (dispatch) => {
     dispatch(fetchAnswersStart());
     try {
-      const res = await axios.get(`/answers/${postId}/get-answers`, {
+      const res = await axios.get(`/posts/${postId}/answers`, {
         params: {
           sort: sortBy,
           limit: perPagePosts,

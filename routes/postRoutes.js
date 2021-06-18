@@ -3,19 +3,11 @@ const express = require('express');
 const authController = require('../controllers/authController');
 const answerController = require('../controllers/answerController');
 const postController = require('../controllers/postController');
-const tagController = require('../controllers/tagController');
 const commentController = require('../controllers/commentController');
 const likeDislikeController = require('../controllers/likeDislikeController');
 
 // initializing express router
 const router = express.Router();
-
-// route to create post
-router.post(
-  '/create-post',
-  authController.protect,
-  postController.createNewPost
-);
 
 // route to get , update and delete single post
 router
@@ -40,9 +32,16 @@ router
   .route('/:id/dislike')
   .post(authController.protect, postController.dislike);
 
-// route to do read operations on posts
-router.route('/:id/get-posts-of-user').get(postController.getPostOfUser);
-router.route('/').get(postController.getAllPost);
-// router.get('/get-posts-for-tag/:tagName', tagController.getPostOfTag);
+// route to create post
+router
+  .route('/')
+  .get(postController.getAllPost)
+  .post(authController.protect, postController.createNewPost);
+
+// route to create answer
+router
+  .route('/:id/answers')
+  .post(authController.protect, answerController.createAnswer)
+  .get(answerController.getAnswerOfPost);
 
 module.exports = router;

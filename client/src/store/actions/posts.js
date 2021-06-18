@@ -34,7 +34,7 @@ export const fetchPosts = (
     try {
       let link = '/posts';
       if (userId) {
-        link = `/posts/${userId}/get-posts-of-user`;
+        link = `/users/${userId}/posts`;
       }
 
       const res = await axios.get(link, {

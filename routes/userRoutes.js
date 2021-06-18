@@ -1,11 +1,12 @@
 const express = require('express');
 
-const authController = require('./../controllers/authController');
-const userController = require('./../controllers/userController');
-
 const multer = require('multer');
-
+const authController = require('../controllers/authController');
+const userController = require('../controllers/userController');
+const postController = require('../controllers/postController');
+const answerController = require('../controllers/answerController');
 const { cloudinaryConfig } = require('../cloudinaryConfig');
+const AppError = require('../utils/AppError');
 
 const storage = multer.memoryStorage();
 
@@ -27,18 +28,21 @@ const multerUploads = multer({
 // initializing express router
 const router = express.Router();
 
-//rouutes to do read operation on users
+// rouutes to do read operation on users
 router.get('/', userController.getAllUsers);
 router.get('/:id', userController.getOneUser);
 
-//route to login and signup
+// route to do read operations on posts
+router.route('/:id/posts').get(postController.getPostOfUser);
+// router.route('/:id/answers').get(answerController.getPostOfUser);
+// route to login and signup
 router.post('/sign-up', authController.signUp);
 router.post('/login', authController.login);
 router.post('/logout', authController.logout);
 
 router.post('/verify', authController.protect);
 
-//route for updating user data except password
+// route for updating user data except password
 router.patch(
   '/update-me',
   authController.protect,
@@ -59,7 +63,7 @@ router.post(
   userController.uploadPostPhoto
 );
 
-//route for updating password
+// route for updating password
 router.patch(
   '/update-password',
   authController.protect,

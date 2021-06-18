@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "NODE_ENV=development nodemon server.js --ignore client/",
+    "server": "NODE_ENV=development nodemon -L server.js --ignore client/",
     "client": "cd client/ && npm start",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },

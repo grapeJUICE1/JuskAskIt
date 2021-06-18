@@ -9,12 +9,12 @@ class EditModal extends Component {
   state = {
     show: false,
     editableFields: {
-      name: this.props.user.name,
-      email: this.props.user.email,
-      bio: this.props.user.bio,
-      location: this.props.user.location,
-      workStatus: this.props.user.workStatus,
-      links: this.props.user.links,
+      name: this.props.profile.name,
+      email: this.props.profile.email,
+      bio: this.props.profile.bio,
+      location: this.props.profile.location,
+      workStatus: this.props.profile.workStatus,
+      links: this.props.profile.links,
     },
   };
 
@@ -39,9 +39,7 @@ class EditModal extends Component {
   render() {
     return (
       <>
-        <Button variant="dark" onClick={this.handleShow}>
-          Edit Profile
-        </Button>
+        <span onClick={this.handleShow}>Edit Profile</span>
 
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header
@@ -65,22 +63,22 @@ class EditModal extends Component {
                   ''
                 )}
                 <hr />
-                {Object.keys(this.state.editableFields).map((val, id) => {
+                {Object.keys(this.state.editableFields).map((key, id) => {
                   const editableFields = this.state.editableFields;
-                  if (val !== 'links') {
+                  if (key !== 'links') {
                     return (
-                      <Form.Group controlId={val} key={id}>
-                        <Form.Label>{val}</Form.Label>
+                      <Form.Group controlId={key} key={id}>
+                        <Form.Label>{key}</Form.Label>
                         <Form.Control
                           type="text"
-                          as={val === 'bio' ? 'textarea' : 'input'}
-                          placeholder={`Enter ${val}`}
-                          value={editableFields[val]}
+                          as={key === 'bio' ? 'textarea' : 'input'}
+                          placeholder={`Enter ${key}`}
+                          value={editableFields[key]}
                           onChange={(e) =>
                             this.setState({
                               editableFields: {
                                 ...editableFields,
-                                [val]: e.target.value,
+                                [key]: e.target.value,
                               },
                             })
                           }
@@ -117,6 +115,7 @@ class EditModal extends Component {
                                             ...editableFields,
                                             links: {
                                               ...editableFields.links,
+
                                               [val]: e.target.value,
                                             },
                                           },
